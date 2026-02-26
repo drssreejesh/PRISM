@@ -5905,8 +5905,39 @@ function selectVisitBtn(context, cr, labid, btn) {
 // ─── FETCH FROM SHEET ─────────────────────────────────────────────────────
 // Fetches all data for a CR from Google Sheets and caches locally
 function fetchAllFromSheet(cr, callback) {
-  if (!SCRIPT_URL) { showToast('⚠️ Script URL not configured', 'error'); callback(false); return; }
-  showToast('🔄 Fetching from server…');
+  showToast('🔄 Fetching from database…');
+  apiLogin(function(ok) {
+    if (!ok) {
+      if (SCRIPT_URL) _legacyFetchFromSheets(cr, callback);
+      else { showToast('⚠️ Not connected', 'error'); callback(false); }
+      return;
+    }
+    fetch(API_BASE + '/api/patients/' + encodeURIComponent(cr), {
+      headers: {'Authorization': 'Bearer ' + _apiToken}
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res.status === 'ok' && res.data) {
+        var d = res.data;
+        if (d.patient) saveVisit(cr, d.patient);
+        if (d.patients) d.patients.forEach(function(p) { saveVisit(cr, p); });
+        showToast('\u2705 Data loaded from database');
+        callback(true);
+      } else {
+        showToast('\u26a0\ufe0f CR not found', 'error');
+        callback(false);
+      }
+    })
+    .catch(function(err) {
+      showToast('\u274c DB error: ' + err.message, 'error');
+      callback(false);
+    });
+  });
+}
+
+function _legacyFetchFromSheets(cr, callback) {
+  if (!SCRIPT_URL) { showToast('\u26a0\ufe0f Script URL not configured', 'error'); callback(false); return; }
+  showToast('\U0001f504 Fetching from Google Sheets\u2026');
   var url = SCRIPT_URL + (SCRIPT_URL.indexOf('?') === -1 ? '?' : '&') + 'cr=' + encodeURIComponent(cr) + '&type=fetch_all';
   fetch(url)
     .then(function(r) { return r.json(); })
@@ -7072,37 +7103,100 @@ function downloadTxt() {
   showToast('✅ Downloaded: ' + filename, 'success');
 }
 
-// ─── SEND TO SHEET (fetch no-cors + GET fallback) ────────────────────────
+// ─── PRISM RAILWAY API ────────────────────────────────────────────────────
+var API_BASE = 'https://prism-server-production.up.railway.app';
+var _apiToken = null;
+var _prismUnlocked = false;
+
+// Show login overlay on startup
+window.addEventListener('DOMContentLoaded', function() {
+  var overlay = document.createElement('div');
+  overlay.id = 'prism-login-overlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#1a1a2e;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;';
+  overlay.innerHTML = '<div style="background:#2d2d44;padding:40px;border-radius:16px;width:320px;text-align:center;border:2px solid #8B1A1A;">' +
+    '<div style="font-size:32px;margin-bottom:8px;">🔬</div>' +
+    '<div style="color:#e0e0e0;font-size:20px;font-weight:700;margin-bottom:4px;">PRISM</div>' +
+    '<div style="color:#888;font-size:12px;margin-bottom:24px;">PGIMER HemePath Registry</div>' +
+    '<input id="prism-pwd-input" type="password" placeholder="Enter access password" style="width:100%;padding:12px;border-radius:8px;border:1px solid #444;background:#1a1a2e;color:white;font-size:15px;text-align:center;box-sizing:border-box;margin-bottom:12px;" />' +
+    '<button onclick="prismDoLogin()" style="width:100%;padding:12px;background:#8B1A1A;color:white;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">Enter PRISM</button>' +
+    '<div id="prism-login-err" style="color:#ff6b6b;font-size:13px;margin-top:12px;min-height:20px;"></div>' +
+    '</div>';
+  document.body.appendChild(overlay);
+  document.getElementById('prism-pwd-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') prismDoLogin();
+  });
+  setTimeout(function() { document.getElementById('prism-pwd-input').focus(); }, 100);
+});
+
+function prismDoLogin() {
+  var pwd = document.getElementById('prism-pwd-input').value.trim();
+  if (!pwd) return;
+  document.getElementById('prism-login-err').textContent = 'Checking…';
+  fetch(API_BASE + '/api/auth/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({role: 'resident', password: pwd})
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (res.token) {
+      _apiToken = res.token;
+      _prismUnlocked = true;
+      document.getElementById('prism-login-overlay').remove();
+    } else {
+      document.getElementById('prism-login-err').textContent = '❌ Wrong password. Try again.';
+      document.getElementById('prism-pwd-input').value = '';
+      document.getElementById('prism-pwd-input').focus();
+    }
+  })
+  .catch(function(err) {
+    document.getElementById('prism-login-err').textContent = '⚠️ Cannot reach server. Check network.';
+  });
+}
+
+function apiLogin(callback) {
+  if (_apiToken) { callback(true); return; }
+  callback(false);
+}
+
 function sendToSheet(payload, successMsg) {
-  if (!SCRIPT_URL) {
-    showToast('⚠️ Script URL not set! Tap ⚙ Config to enter your Apps Script URL.', 'error');
-    promptConfig();
+  showToast('🔄 Saving to database…');
+  // Also keep Google Sheets sync in parallel (safe dual-write)
+  if (SCRIPT_URL) {
+    var gsUrl = SCRIPT_URL + (SCRIPT_URL.indexOf('?') === -1 ? '?' : '&') +
+      'write=1&data=' + encodeURIComponent(JSON.stringify(payload));
+    fetch(gsUrl, {mode: 'no-cors'}).catch(function(){});
+  }
+  // Route to correct API endpoint based on payload fields
+  var action = payload.action || '';
+  var sheet = (payload.sheet || '').toLowerCase();
+  var lab = payload.lab || '';
+  var endpoint = '/api/patients';
+  if (action === 'morphology' || sheet === 'morphology') endpoint = '/api/morph';
+  else if (action === 'order') endpoint = '/api/orders/' + lab;
+  else if (action === 'save_acceptance') endpoint = '/api/acceptance/' + lab;
+  else if (action === 'save_result' || action === 'result') endpoint = '/api/results/' + lab;
+
+  if (!_apiToken) {
+    showToast('⚠️ Not logged in — saved locally only', 'error');
     return;
   }
-  showToast('🔄 Syncing to Google Sheets…');
-  var url = SCRIPT_URL + (SCRIPT_URL.indexOf('?') === -1 ? '?' : '&') +
-    'write=1&data=' + encodeURIComponent(JSON.stringify(payload));
-  // Use no-cors for writes — Apps Script doesn't return CORS headers on write
-  // no-cors = fire and forget, we assume success if no network error
-  fetch(url, {mode: 'no-cors'})
-    .then(function() {
-      showToast(successMsg || '✅ Saved to Google Sheets', 'success');
-    })
-    .catch(function(err) {
-      // Fallback: try JSONP
-      var cbName = 'writeCB_' + Date.now();
-      var script = document.createElement('script');
-      window[cbName] = function(res) {
-        delete window[cbName];
-        if (document.body.contains(script)) document.body.removeChild(script);
-        showToast(successMsg || '✅ Saved to Google Sheets', 'success');
-      };
-      script.onerror = function() {
-        showToast('⚠️ Saved locally. Sheet sync may have failed.', 'error');
-      };
-      script.src = url + '&callback=' + cbName;
-      document.body.appendChild(script);
-    });
+  fetch(API_BASE + endpoint, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _apiToken},
+    body: JSON.stringify(payload)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (res.status === 'ok' || res.id || res.cr) {
+      showToast(successMsg || '✅ Saved to database', 'success');
+    } else {
+      showToast('⚠️ ' + (res.error || 'Save may have failed'), 'error');
+    }
+  })
+  .catch(function(err) {
+    showToast('⚠️ Saved locally. DB sync failed: ' + err.message, 'error');
+  });
 }
 </script>
 </body>
