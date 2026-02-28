@@ -5619,15 +5619,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const dateEl = document.getElementById('reg_date');
   if (dateEl) dateEl.valueAsDate = new Date();
 
-  // Hide home screen, show role selection
-  const homeEl = document.getElementById('screen-home');
-  if (homeEl) homeEl.style.display = 'none';
-
+  // Role selection handled by PRISM login screen — skip old role selector
   const roleEl = document.getElementById('screen-role');
-  if (roleEl) {
-    roleEl.style.display = 'flex';
-    roleEl.style.zIndex = '99999';
-  }
+  if (roleEl) roleEl.style.display = 'none';
 });
 
 
@@ -7158,7 +7152,7 @@ function prismDoLogin() {
         _prismUnlocked = true;
         document.getElementById('prism-login-overlay').remove();
         showToast('✅ Logged in as ' + role.toUpperCase(), 'success');
-        setTimeout(function() { applyRoleUI(role); }, 300);
+        setTimeout(function() { if (typeof selectRole === 'function') selectRole(role); }, 100);
       } else {
         tryNextRole();
       }
