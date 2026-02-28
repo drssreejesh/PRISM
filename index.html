@@ -7,7 +7,8 @@
   <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PRISM — PGIMER HemePath Registry</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --crimson: #8B1A1A;
@@ -2160,6 +2161,16 @@
 
       <div class="sub-panel active" id="accept-fish">
         <div class="workflow-block" id="accept_fish_wfblock"></div>
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--crimson);letter-spacing:0.05em;">⏳ PENDING ACCEPTANCE — FISH</div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="loadPending('fish')" style="padding:5px 12px;background:#1a1a2e;border:1px solid var(--border);border-radius:6px;color:var(--slate);font-family:var(--mono);font-size:11px;cursor:pointer;">🔄 Refresh</button>
+              <button onclick="downloadPendingExcel('fish')" style="padding:5px 12px;background:#1a6a3a;border:none;border-radius:6px;color:white;font-family:var(--mono);font-size:11px;cursor:pointer;">⬇ Excel</button>
+            </div>
+          </div>
+          <div id="pending-fish-table" style="overflow-x:auto;"></div>
+        </div>
         <div class="cr-lookup">
           <div class="field"><label>CR Number</label>
             <input type="text" id="afish_cr" placeholder="CR-2024-0001" onkeydown="if(event.key==='Enter')loadForAcceptance('fish')">
@@ -2296,6 +2307,16 @@
       </div>
       <div class="sub-panel" id="accept-fcm">
         <div class="workflow-block" id="accept_fcm_wfblock"></div>
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--crimson);letter-spacing:0.05em;">⏳ PENDING ACCEPTANCE — FCM</div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="loadPending('fcm')" style="padding:5px 12px;background:#1a1a2e;border:1px solid var(--border);border-radius:6px;color:var(--slate);font-family:var(--mono);font-size:11px;cursor:pointer;">🔄 Refresh</button>
+              <button onclick="downloadPendingExcel('fcm')" style="padding:5px 12px;background:#1a6a3a;border:none;border-radius:6px;color:white;font-family:var(--mono);font-size:11px;cursor:pointer;">⬇ Excel</button>
+            </div>
+          </div>
+          <div id="pending-fcm-table" style="overflow-x:auto;"></div>
+        </div>
         <div class="cr-lookup">
           <div class="field"><label>CR Number</label>
             <input type="text" id="afcm_cr" placeholder="CR-2024-0001" onkeydown="if(event.key==='Enter')loadForAcceptance('fcm')">
@@ -2424,6 +2445,16 @@
       </div>
       <div class="sub-panel" id="accept-rtpcr">
         <div class="workflow-block" id="accept_rtpcr_wfblock"></div>
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--crimson);letter-spacing:0.05em;">⏳ PENDING ACCEPTANCE — RT-PCR</div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="loadPending('rtpcr')" style="padding:5px 12px;background:#1a1a2e;border:1px solid var(--border);border-radius:6px;color:var(--slate);font-family:var(--mono);font-size:11px;cursor:pointer;">🔄 Refresh</button>
+              <button onclick="downloadPendingExcel('rtpcr')" style="padding:5px 12px;background:#1a6a3a;border:none;border-radius:6px;color:white;font-family:var(--mono);font-size:11px;cursor:pointer;">⬇ Excel</button>
+            </div>
+          </div>
+          <div id="pending-rtpcr-table" style="overflow-x:auto;"></div>
+        </div>
         <div class="cr-lookup">
           <div class="field"><label>CR Number</label>
             <input type="text" id="artpcr_cr" placeholder="CR-2024-0001" onkeydown="if(event.key==='Enter')loadForAcceptance('rtpcr')">
@@ -2528,6 +2559,16 @@
       </div>
       <div class="sub-panel" id="accept-ngsh12">
         <div class="workflow-block" id="accept_ngsh12_wfblock"></div>
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--crimson);letter-spacing:0.05em;">⏳ PENDING ACCEPTANCE — NGS-H12</div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="loadPending('ngsh12')" style="padding:5px 12px;background:#1a1a2e;border:1px solid var(--border);border-radius:6px;color:var(--slate);font-family:var(--mono);font-size:11px;cursor:pointer;">🔄 Refresh</button>
+              <button onclick="downloadPendingExcel('ngsh12')" style="padding:5px 12px;background:#1a6a3a;border:none;border-radius:6px;color:white;font-family:var(--mono);font-size:11px;cursor:pointer;">⬇ Excel</button>
+            </div>
+          </div>
+          <div id="pending-ngsh12-table" style="overflow-x:auto;"></div>
+        </div>
         <div class="cr-lookup">
           <div class="field"><label>CR Number</label>
             <input type="text" id="angsh12_cr" placeholder="CR-2024-0001" onkeydown="if(event.key==='Enter')loadForAcceptance('ngsh12')">
@@ -2592,6 +2633,16 @@
       </div>
       <div class="sub-panel" id="accept-ngsh9">
         <div class="workflow-block" id="accept_ngsh9_wfblock"></div>
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--crimson);letter-spacing:0.05em;">⏳ PENDING ACCEPTANCE — NGS-H9</div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="loadPending('ngsh9')" style="padding:5px 12px;background:#1a1a2e;border:1px solid var(--border);border-radius:6px;color:var(--slate);font-family:var(--mono);font-size:11px;cursor:pointer;">🔄 Refresh</button>
+              <button onclick="downloadPendingExcel('ngsh9')" style="padding:5px 12px;background:#1a6a3a;border:none;border-radius:6px;color:white;font-family:var(--mono);font-size:11px;cursor:pointer;">⬇ Excel</button>
+            </div>
+          </div>
+          <div id="pending-ngsh9-table" style="overflow-x:auto;"></div>
+        </div>
         <div class="cr-lookup">
           <div class="field"><label>CR Number</label>
             <input type="text" id="angsh9_cr" placeholder="CR-2024-0001" onkeydown="if(event.key==='Enter')loadForAcceptance('ngsh9')">
@@ -2672,6 +2723,16 @@
       </div>
       <div class="sub-panel" id="accept-tcr">
         <div class="workflow-block" id="accept_tcr_wfblock"></div>
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--crimson);letter-spacing:0.05em;">⏳ PENDING ACCEPTANCE — TCR</div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="loadPending('tcr')" style="padding:5px 12px;background:#1a1a2e;border:1px solid var(--border);border-radius:6px;color:var(--slate);font-family:var(--mono);font-size:11px;cursor:pointer;">🔄 Refresh</button>
+              <button onclick="downloadPendingExcel('tcr')" style="padding:5px 12px;background:#1a6a3a;border:none;border-radius:6px;color:white;font-family:var(--mono);font-size:11px;cursor:pointer;">⬇ Excel</button>
+            </div>
+          </div>
+          <div id="pending-tcr-table" style="overflow-x:auto;"></div>
+        </div>
         <div class="cr-lookup">
           <div class="field"><label>CR Number</label>
             <input type="text" id="atcr_cr" placeholder="CR-2024-0001" onkeydown="if(event.key==='Enter')loadForAcceptance('tcr')">
@@ -3771,6 +3832,26 @@
             onkeydown="if(event.key==='Enter')loadReport()">
         </div>
         <button class="lookup-btn" onclick="loadReport()">🔍 Load Patient</button>
+      </div>
+
+      <!-- Admin Excel Export -->
+      <div style="background:#1a1a2e;border:1.5px solid var(--crimson);border-radius:12px;padding:18px 16px;margin-bottom:20px;">
+        <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--crimson);margin-bottom:12px;">🗂 Admin Export — Multi-Lab Excel</div>
+        <div style="font-size:12px;color:var(--slate);margin-bottom:14px;">Download all lab data as one Excel file with separate sheets per lab. Requires Admin login.</div>
+        <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:130px;">
+            <label style="font-family:var(--mono);font-size:10px;color:var(--slate);display:block;margin-bottom:4px;">FROM DATE</label>
+            <input type="date" id="admin_from_date" style="width:100%;padding:8px;border-radius:6px;border:1px solid #444;background:#111;color:white;font-size:13px;box-sizing:border-box;">
+          </div>
+          <div style="flex:1;min-width:130px;">
+            <label style="font-family:var(--mono);font-size:10px;color:var(--slate);display:block;margin-bottom:4px;">TO DATE</label>
+            <input type="date" id="admin_to_date" style="width:100%;padding:8px;border-radius:6px;border:1px solid #444;background:#111;color:white;font-size:13px;box-sizing:border-box;">
+          </div>
+        </div>
+        <button onclick="downloadAdminExcel()" style="width:100%;padding:12px;background:var(--crimson);color:white;border:none;border-radius:8px;font-family:var(--mono);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.05em;">
+          ⬇ Download Admin Excel
+        </button>
+        <div id="admin-export-status" style="font-size:11px;color:var(--slate);margin-top:8px;min-height:16px;text-align:center;"></div>
       </div>
 
       <div id="rpt_content" class="hidden">
@@ -7266,6 +7347,194 @@ function sendToSheet(payload, successMsg) {
     showToast('⚠️ Saved locally. DB sync failed: ' + err.message, 'error');
   });
 }
+
+// ─── PENDING LIST & EXCEL EXPORT ─────────────────────────────────────────
+
+var _pendingCache = {}; // cache pending data per lab
+
+function loadPending(lab) {
+  var el = document.getElementById('pending-' + lab + '-table');
+  if (!el) return;
+  el.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--slate);padding:8px;">🔄 Loading pending cases...</div>';
+  if (!_apiToken) { el.innerHTML = '<div style="color:var(--crimson);font-size:11px;padding:8px;">⚠️ Not logged in</div>'; return; }
+
+  // Fetch orders and acceptances in parallel
+  Promise.all([
+    fetch(API_BASE + '/api/orders/' + lab, { headers: {'Authorization': 'Bearer ' + _apiToken} }).then(function(r){return r.json();}),
+    fetch(API_BASE + '/api/acceptance/' + lab, { headers: {'Authorization': 'Bearer ' + _apiToken} }).then(function(r){return r.json();})
+  ]).then(function(results) {
+    var orders = (results[0].data || results[0].orders || results[0] || []);
+    var accepted = (results[1].data || results[1].acceptances || results[1] || []);
+    if (!Array.isArray(orders)) orders = [];
+    if (!Array.isArray(accepted)) accepted = [];
+
+    // Build set of accepted CR+labid pairs
+    var acceptedSet = {};
+    accepted.forEach(function(a) { acceptedSet[(a.cr||'') + '|' + (a.labid||'')] = true; });
+
+    // Filter orders not yet accepted
+    var pending = orders.filter(function(o) {
+      return !acceptedSet[(o.cr||'') + '|' + (o.labid||'')];
+    });
+
+    _pendingCache[lab] = pending;
+    renderPendingTable(lab, pending, el);
+  }).catch(function(err) {
+    el.innerHTML = '<div style="color:var(--crimson);font-size:11px;padding:8px;">❌ Error: ' + err.message + '</div>';
+  });
+}
+
+function renderPendingTable(lab, rows, el) {
+  if (!rows || rows.length === 0) {
+    el.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:#1a6a3a;padding:8px;">✅ No pending cases</div>';
+    return;
+  }
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:11px;font-family:var(--mono);">';
+  html += '<thead><tr style="background:#2a2a3e;color:var(--slate);">';
+  ['#','CR Number','Lab ID','Name','Age','Sex','Date','Suspicion','Panels'].forEach(function(h) {
+    html += '<th style="padding:6px 8px;text-align:left;border-bottom:1px solid #333;white-space:nowrap;">' + h + '</th>';
+  });
+  html += '</tr></thead><tbody>';
+  rows.forEach(function(r, i) {
+    var bg = i % 2 === 0 ? '#1a1a2e' : '#16162a';
+    html += '<tr style="background:' + bg + ';cursor:pointer;" onclick="fillCRfromPending(&quot;' + lab + '&quot;,&quot;' + (r.cr||'') + '&quot;)">';
+    html += '<td style="padding:6px 8px;color:#555;">' + (i+1) + '</td>';
+    html += '<td style="padding:6px 8px;color:var(--crimson);font-weight:700;">' + (r.cr||'-') + '</td>';
+    html += '<td style="padding:6px 8px;">' + (r.labid||'-') + '</td>';
+    html += '<td style="padding:6px 8px;color:white;">' + (r.name||'-') + '</td>';
+    html += '<td style="padding:6px 8px;">' + (r.age||'-') + '</td>';
+    html += '<td style="padding:6px 8px;">' + (r.sex||'-') + '</td>';
+    html += '<td style="padding:6px 8px;">' + (r.date||'-') + '</td>';
+    html += '<td style="padding:6px 8px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + (r.suspicion||'') + '">' + (r.suspicion||'-') + '</td>';
+    html += '<td style="padding:6px 8px;">' + (r.panels||'-') + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  html += '<div style="font-size:10px;color:#555;margin-top:6px;padding:0 4px;">Click a row to load CR into acceptance form below</div>';
+  el.innerHTML = html;
+}
+
+function fillCRfromPending(lab, cr) {
+  var input = document.getElementById('a' + lab + '_cr');
+  if (input) {
+    input.value = cr;
+    if (typeof loadForAcceptance === 'function') loadForAcceptance(lab);
+  }
+}
+
+function downloadPendingExcel(lab) {
+  var rows = _pendingCache[lab];
+  if (!rows || rows.length === 0) {
+    showToast('⚠️ No pending data. Click Refresh first.', 'error');
+    return;
+  }
+  if (typeof XLSX === 'undefined') { showToast('⚠️ Excel library not loaded', 'error'); return; }
+
+  var headers = ['CR Number','Lab ID','Name','Age','Sex','Date','Sample','Faculty','JR','SR','TLC','BM Quality','Blasts%','Eos%','Plasma%','Right Imprint','Left Imprint','Suspicion','Panels Ordered'];
+  var data = [headers];
+  rows.forEach(function(r) {
+    data.push([
+      r.cr||'', r.labid||'', r.name||'', r.age||'', r.sex||'', r.date||'',
+      r.sample||'', r.faculty||'', r.jr||'', r.sr||'', r.tlc||'',
+      r.bm_quality||r.bmQuality||'', r.blasts||'', r.eos||'', r.plasma||'',
+      r.right_imprint||r.rightImprint||'', r.left_imprint||r.leftImprint||'',
+      r.suspicion||'', r.panels||''
+    ]);
+  });
+
+  var wb = XLSX.utils.book_new();
+  var ws = XLSX.utils.aoa_to_sheet(data);
+  // Style header row width
+  ws['!cols'] = headers.map(function(h) { return {wch: Math.max(h.length, 12)}; });
+  XLSX.utils.book_append_sheet(wb, ws, lab.toUpperCase() + ' Pending');
+  XLSX.writeFile(wb, 'PRISM_' + lab.toUpperCase() + '_Pending_' + new Date().toISOString().slice(0,10) + '.xlsx');
+  showToast('✅ Excel downloaded', 'success');
+}
+
+// ─── ADMIN EXCEL EXPORT ───────────────────────────────────────────────────
+function downloadAdminExcel() {
+  if (_currentRole !== 'admin') { showToast('⚠️ Admin access required', 'error'); return; }
+  if (typeof XLSX === 'undefined') { showToast('⚠️ Excel library not loaded', 'error'); return; }
+
+  var fromDate = document.getElementById('admin_from_date').value;
+  var toDate = document.getElementById('admin_to_date').value;
+  if (!fromDate || !toDate) { showToast('⚠️ Please select both dates', 'error'); return; }
+
+  var status = document.getElementById('admin-export-status');
+  status.textContent = '🔄 Fetching data from all labs...';
+
+  var labs = ['fish','fcm','rtpcr','ngsh12','ngsh9','tcr'];
+  var params = '?from=' + fromDate + '&to=' + toDate;
+
+  Promise.all(labs.map(function(lab) {
+    return fetch(API_BASE + '/api/results/' + lab + params, {
+      headers: {'Authorization': 'Bearer ' + _apiToken}
+    }).then(function(r) { return r.json(); }).then(function(res) {
+      return { lab: lab, data: res.data || res.results || [] };
+    }).catch(function() { return { lab: lab, data: [] }; });
+  })).then(function(allData) {
+    var wb = XLSX.utils.book_new();
+    var hasData = false;
+
+    allData.forEach(function(item) {
+      var rows = item.data;
+      if (!Array.isArray(rows)) rows = [];
+      var headers = ['CR Number','Lab ID','Name','Date','Panels','Results','Notes'];
+      var sheetData = [headers];
+      rows.forEach(function(r) {
+        var results = '';
+        if (r.panel_results) {
+          try {
+            var pr = typeof r.panel_results === 'string' ? JSON.parse(r.panel_results) : r.panel_results;
+            results = Object.entries(pr).map(function(e) { return e[0] + ': ' + e[1]; }).join(' | ');
+          } catch(e) { results = String(r.panel_results); }
+        }
+        sheetData.push([
+          r.cr||'', r.labid||'', r.name||'', r.date||r.created_at||'',
+          r.panels||'', results, r.notes||''
+        ]);
+        if (rows.length > 0) hasData = true;
+      });
+      var ws = XLSX.utils.aoa_to_sheet(sheetData);
+      ws['!cols'] = headers.map(function() { return {wch: 18}; });
+      XLSX.utils.book_append_sheet(wb, ws, item.lab.toUpperCase());
+    });
+
+    if (!hasData) {
+      status.textContent = '⚠️ No data found for selected date range';
+      return;
+    }
+    XLSX.writeFile(wb, 'PRISM_Admin_Export_' + fromDate + '_to_' + toDate + '.xlsx');
+    status.textContent = '✅ Downloaded successfully';
+    showToast('✅ Admin Excel downloaded', 'success');
+  }).catch(function(err) {
+    status.textContent = '❌ Error: ' + err.message;
+  });
+}
+
+// Auto-load pending when switching to acceptance tab
+var _origSwitchSubTab = typeof switchSubTab === 'function' ? switchSubTab : null;
+document.addEventListener('DOMContentLoaded', function() {
+  // Auto-load pending when acceptance screen is opened
+  var origShowScreen = window.showScreen;
+  if (origShowScreen) {
+    window.showScreen = function(id) {
+      origShowScreen(id);
+      if (id === 'screen-results') {
+        var activeLab = _currentRole && ['fish','fcm','rtpcr','ngsh12','ngsh9','tcr'].indexOf(_currentRole) >= 0 ? _currentRole : 'fish';
+        setTimeout(function() { loadPending(activeLab); }, 300);
+      }
+    };
+  }
+
+  // Set default dates for admin export
+  var today = new Date();
+  var firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  var toEl = document.getElementById('admin_to_date');
+  var fromEl = document.getElementById('admin_from_date');
+  if (toEl) toEl.value = today.toISOString().slice(0,10);
+  if (fromEl) fromEl.value = firstOfMonth.toISOString().slice(0,10);
+});
 </script>
 </body>
 </html>
