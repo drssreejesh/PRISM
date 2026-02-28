@@ -7158,7 +7158,7 @@ function prismDoLogin() {
         _prismUnlocked = true;
         document.getElementById('prism-login-overlay').remove();
         showToast('✅ Logged in as ' + role.toUpperCase(), 'success');
-        applyRoleUI(role);
+        setTimeout(function() { applyRoleUI(role); }, 300);
       } else {
         tryNextRole();
       }
@@ -7194,9 +7194,11 @@ var ROLE_LAB = {
 };
 
 function applyRoleUI(role) {
+  console.log('applyRoleUI called with role:', role);
   var allowed = ROLE_SCREENS[role] || [];
   var screenIds = ['screen-register','screen-morph','screen-order','screen-results','screen-entry','screen-provbm','screen-report'];
   var cards = document.querySelectorAll('.home-card');
+  console.log('Cards found:', cards.length, 'Allowed screens:', allowed);
   screenIds.forEach(function(sid, i) {
     if (!cards[i]) return;
     if (allowed.indexOf(sid) === -1) {
