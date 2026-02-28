@@ -7128,30 +7128,45 @@ window.addEventListener('DOMContentLoaded', function() {
   setTimeout(function() { document.getElementById('prism-pwd-input').focus(); }, 100);
 });
 
+var _currentRole = 'resident';
+var ALL_ROLES = ['resident','fish','fcm','rtpcr','ngsh12','ngsh9','tcr','consultant','admin'];
+
 function prismDoLogin() {
   var pwd = document.getElementById('prism-pwd-input').value.trim();
   if (!pwd) return;
   document.getElementById('prism-login-err').textContent = 'Checking…';
-  fetch(API_BASE + '/api/auth/login', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({role: 'resident', password: pwd})
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(res) {
-    if (res.token) {
-      _apiToken = res.token;
-      _prismUnlocked = true;
-      document.getElementById('prism-login-overlay').remove();
-    } else {
+  // Try each role until one succeeds
+  var roleIndex = 0;
+  function tryNextRole() {
+    if (roleIndex >= ALL_ROLES.length) {
       document.getElementById('prism-login-err').textContent = '❌ Wrong password. Try again.';
       document.getElementById('prism-pwd-input').value = '';
       document.getElementById('prism-pwd-input').focus();
+      return;
     }
-  })
-  .catch(function(err) {
-    document.getElementById('prism-login-err').textContent = '⚠️ Cannot reach server. Check network.';
-  });
+    var role = ALL_ROLES[roleIndex++];
+    fetch(API_BASE + '/api/auth/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({role: role, password: pwd})
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res.token) {
+        _apiToken = res.token;
+        _currentRole = role;
+        _prismUnlocked = true;
+        document.getElementById('prism-login-overlay').remove();
+        showToast('✅ Logged in as ' + role.toUpperCase(), 'success');
+      } else {
+        tryNextRole();
+      }
+    })
+    .catch(function(err) {
+      document.getElementById('prism-login-err').textContent = '⚠️ Cannot reach server. Check network.';
+    });
+  }
+  tryNextRole();
 }
 
 function apiLogin(callback) {
