@@ -7158,6 +7158,7 @@ function prismDoLogin() {
         _prismUnlocked = true;
         document.getElementById('prism-login-overlay').remove();
         showToast('✅ Logged in as ' + role.toUpperCase(), 'success');
+        applyRoleUI(role);
       } else {
         tryNextRole();
       }
@@ -7172,6 +7173,62 @@ function prismDoLogin() {
 function apiLogin(callback) {
   if (_apiToken) { callback(true); return; }
   callback(false);
+}
+
+// ─── ROLE-BASED UI ───────────────────────────────────────────────────────
+var ROLE_SCREENS = {
+  resident:   ['screen-register','screen-morph','screen-report','screen-provbm'],
+  fish:       ['screen-order','screen-results','screen-entry','screen-report'],
+  fcm:        ['screen-order','screen-results','screen-entry','screen-report'],
+  rtpcr:      ['screen-order','screen-results','screen-entry','screen-report'],
+  ngsh12:     ['screen-order','screen-results','screen-entry','screen-report'],
+  ngsh9:      ['screen-order','screen-results','screen-entry','screen-report'],
+  tcr:        ['screen-order','screen-results','screen-entry','screen-report'],
+  consultant: ['screen-register','screen-morph','screen-order','screen-results','screen-entry','screen-report','screen-provbm'],
+  admin:      ['screen-register','screen-morph','screen-order','screen-results','screen-entry','screen-report','screen-provbm']
+};
+
+var ROLE_LAB = {
+  fish:'fish', fcm:'fcm', rtpcr:'rtpcr',
+  ngsh12:'ngsh12', ngsh9:'ngsh9', tcr:'tcr'
+};
+
+function applyRoleUI(role) {
+  var allowed = ROLE_SCREENS[role] || [];
+  var screenIds = ['screen-register','screen-morph','screen-order','screen-results','screen-entry','screen-provbm','screen-report'];
+  var cards = document.querySelectorAll('.home-card');
+  screenIds.forEach(function(sid, i) {
+    if (!cards[i]) return;
+    if (allowed.indexOf(sid) === -1) {
+      cards[i].style.opacity = '0.3';
+      cards[i].style.pointerEvents = 'none';
+      cards[i].style.filter = 'grayscale(1)';
+    }
+  });
+
+  // Grey out sub-tabs for other labs
+  var labRole = ROLE_LAB[role];
+  if (labRole) {
+    var allLabs = ['fish','fcm','rtpcr','ngsh12','ngsh9','tcr'];
+    document.querySelectorAll('.sub-tab').forEach(function(btn) {
+      var oc = (btn.getAttribute('onclick') || '').toLowerCase();
+      allLabs.forEach(function(lab) {
+        if (oc.indexOf("'" + lab + "'") !== -1 || oc.indexOf('"' + lab + '"') !== -1) {
+          if (lab !== labRole) {
+            btn.style.opacity = '0.3';
+            btn.style.pointerEvents = 'none';
+          }
+        }
+      });
+    });
+  }
+
+  // Role badge top right
+  var badge = document.getElementById('prism-role-badge') || document.createElement('div');
+  badge.id = 'prism-role-badge';
+  badge.style.cssText = 'position:fixed;top:10px;right:12px;background:#8B1A1A;color:white;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;z-index:9999;letter-spacing:0.08em;';
+  badge.textContent = role.toUpperCase();
+  document.body.appendChild(badge);
 }
 
 function sendToSheet(payload, successMsg) {
