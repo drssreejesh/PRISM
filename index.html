@@ -4567,7 +4567,7 @@ function findAllVisitRows(sheet, cr) {
   return Object.values(seen);
 }`;
 
-let SCRIPT_URL = localStorage.getItem('hemepath_script_url') || 'https://script.google.com/macros/s/AKfycbxZLGjdSsmDxiONY91JVLyF26qYfFg0nekK5dTOdIiAnooxkzK_6b3fCPn697zHYDnD/exec';
+const SCRIPT_URL = ''; // Google Sheets removed — Railway DB only
 
 function openConfig() {
   document.getElementById('configModal').classList.add('open');
@@ -4579,7 +4579,7 @@ function closeConfig() {
 }
 function saveConfig() {
   SCRIPT_URL = document.getElementById('scriptUrl').value.trim();
-  localStorage.setItem('hemepath_script_url', SCRIPT_URL);
+  // SCRIPT_URL no longer used — Google Sheets removed
   var banner = document.getElementById('setup-url-banner');
   if (banner) banner.remove();
   closeConfig();
@@ -5688,14 +5688,7 @@ function validateCR(input) {
 
 // Auto-fill year field on load
 document.addEventListener('DOMContentLoaded', function() {
-  // If no script URL configured, show setup prompt after role selection
-  if (!SCRIPT_URL) {
-    var banner = document.createElement('div');
-    banner.id = 'setup-url-banner';
-    banner.style.cssText = 'position:fixed;bottom:70px;left:0;right:0;z-index:9999;background:#7a1020;color:white;padding:14px 20px;font-family:var(--mono);font-size:12px;text-align:center;box-shadow:0 -4px 20px rgba(0,0,0,0.4);';
-    banner.innerHTML = '⚠️ Google Sheets not configured. Tap <strong>⚙ Config</strong> (bottom left) and enter your Apps Script URL to enable syncing.';
-    document.body.appendChild(banner);
-  }
+  // Google Sheets removed — Railway DB only
   // Set default year in lab ID
   const yearEl = document.getElementById('reg_labid_year');
   if (yearEl && !yearEl.value) yearEl.value = new Date().getFullYear();
@@ -5717,12 +5710,12 @@ function checkUniqueLabId(lab, input) {
   const statusEl = document.getElementById('a' + lab + '_uid_status');
   if (!val) { statusEl.textContent = ''; statusEl.style.color = ''; return; }
 
-  // Check against all saved acceptance records for this lab
-  const allKeys = Object.keys(localStorage);
+  // Check against all saved acceptance records for this lab (session memory)
+  const allKeys = Object.keys(_sessionStore);
   const duplicate = allKeys.some(k => {
     if (!k.startsWith('hemepath_accept_' + lab + '_')) return false;
     try {
-      const saved = JSON.parse(localStorage.getItem(k));
+      const saved = _sessionStore[k];
       const savedUid = saved && saved.uniqueLabId ? saved.uniqueLabId.trim().toLowerCase() : '';
       return savedUid && savedUid === val.toLowerCase();
     } catch(e) { return false; }
@@ -6001,8 +5994,7 @@ function fetchAllFromSheet(cr, callback) {
   showToast('🔄 Fetching from database…');
   apiLogin(function(ok) {
     if (!ok) {
-      if (SCRIPT_URL) _legacyFetchFromSheets(cr, callback);
-      else { showToast('⚠️ Not connected', 'error'); callback(false); }
+      showToast('⚠️ Not connected to server', 'error'); callback(false);
       return;
     }
     fetch(API_BASE + '/api/patients/' + encodeURIComponent(cr), {
@@ -6192,33 +6184,39 @@ function testConnection() {
 function loadForProvBM() {
   var cr = document.getElementById('provbm_cr').value.trim();
   if (!cr) { showToast('Please enter a CR number', 'error'); return; }
-  function _showProv(pt) {
-    var visits = getVisits(cr);
-    if (!visits.length) visits = [pt];
-    // Always start with LATEST but show selector for ALL visits (even single)
-    var labid = pt.labid || (visits[visits.length-1]||{}).labid || '';
+  showToast('🔄 Fetching from database…');
+  fetch(API_BASE + '/api/patients/' + encodeURIComponent(cr), {
+    headers: {'Authorization': 'Bearer ' + _apiToken}
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (!res.data || !res.data.patients || !res.data.patients.length) {
+      showToast('❌ Patient not found. Register first.', 'error'); return;
+    }
+    var visits = res.data.patients;
+    var morphs = res.data.morphs || [];
+    var pt = visits[visits.length - 1]; // latest visit
+    var labid = pt.labid;
     window._lastProvBMCR_labid = labid;
+    window._lastProvBMCR = cr;
+    window._provBMVisits = visits;
+    window._provBMMorphs = morphs;
     setSelectedLabId('morph', cr, labid);
-    document.getElementById('provbm_pc').innerHTML = patientCardHTML(visits.find(function(v){return v.labid===labid;})||pt);
-    var morph = labid ? loadLocal(vKey('morph', cr, labid)) : null;
+    document.getElementById('provbm_pc').innerHTML = patientCardHTML(pt);
+    // Load morph report for this labid
+    var morph = morphs.find(function(m){return m.labid === labid;});
     document.getElementById('provbm_report').value = (morph && morph.report) ? morph.report : '';
-    // Always show visit selector in provisional report (even for single visit)
+    // Visit selector
     var wrap = document.getElementById('provbm_wrap');
     if (wrap) {
       var ex = wrap.querySelector('.visit-selector'); if(ex) ex.remove();
       wrap.insertAdjacentHTML('afterbegin', _visitSelectorHTML('morph', cr, visits, labid));
     }
     document.getElementById('provbm_wrap').classList.remove('hidden');
-    window._lastProvBMCR = cr;
     showToast('✅ Loaded: ' + (pt.name || cr), 'success');
-  }
-  var pt = getLatestVisit(cr) || loadLocal('pt_' + cr);
-  if (pt) { _showProv(pt); return; }
-  showToast('🔄 Searching server…');
-  fetchAllFromSheet(cr, function(found) {
-    var p = loadLocal('pt_' + cr);
-    if (!found || !p) { showToast('❌ Patient not found. Register first.', 'error'); return; }
-    _showProv(p);
+  })
+  .catch(function(err) {
+    showToast('❌ Error: ' + err.message, 'error');
   });
 }
 
@@ -6521,14 +6519,14 @@ function saveAcceptance(lab) {
     return;
   }
 
-  // Check for duplicates (allow re-save of same CR)
-  const allKeys = Object.keys(localStorage);
+  // Check for duplicates (allow re-save of same CR) — session memory only
+  const allKeys = Object.keys(_sessionStore);
   const duplicate = allKeys.some(k => {
     if (!k.startsWith('hemepath_accept_' + lab + '_')) return false;
     const savedCr = k.replace('hemepath_accept_' + lab + '_', '');
     if (savedCr === cr) return false; // same case = re-save, allowed
     try {
-      const saved = JSON.parse(localStorage.getItem(k));
+      const saved = _sessionStore[k];
       const savedUid = saved && saved.uniqueLabId ? saved.uniqueLabId.trim().toLowerCase() : '';
       return savedUid && savedUid === uniqueLabId.toLowerCase();
     } catch(e) { return false; }
@@ -6997,70 +6995,60 @@ function lookupPatient(module) {
 function loadReport() {
   const cr = document.getElementById('rpt_cr').value.trim();
   if (!cr) { showToast('Please enter a CR number', 'error'); return; }
-  function _show(patient) {
-    var visits = getVisits(cr);
-    if (!visits.length) visits = [patient];
-    // Use latest visit by default
-    var labid = visits[visits.length-1].labid || patient.labid || '';
+  showToast('🔄 Fetching from database…');
+  fetch(API_BASE + '/api/patients/' + encodeURIComponent(cr), {
+    headers: {'Authorization': 'Bearer ' + _apiToken}
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (!res.data || !res.data.patients || !res.data.patients.length) {
+      showToast('❌ Patient not found. Register first.', 'error'); return;
+    }
+    var visits = res.data.patients;
+    var pt = visits[visits.length - 1]; // latest visit
+    var labid = res.active_labid || pt.labid;
     window._lastReportCR = cr;
     window._lastReportLabId = labid;
-    document.getElementById('rpt_patient_card').innerHTML = patientCardHTML(visits.find(function(v){return v.labid===labid;})||patient);
-    // Always show visit selector
+    window._lastReportData = res.data; // cache for downloadTxt
+    document.getElementById('rpt_patient_card').innerHTML = patientCardHTML(pt);
     var wrap = document.getElementById('rpt_content');
     var ex = wrap.querySelector('.visit-selector'); if(ex) ex.remove();
     wrap.insertAdjacentHTML('afterbegin', _reportVisitSelectorHTML(cr, visits, labid));
     wrap.classList.remove('hidden');
-    showToast('✅ Loaded: ' + (patient.name || cr), 'success');
-  }
-  const patient = getLatestVisit(cr) || loadLocal('pt_' + cr);
-  if (patient) { _show(patient); return; }
-  showToast('🔄 Searching server…');
-  fetchAllFromSheet(cr, function(found) {
-    const pt = getLatestVisit(cr) || loadLocal('pt_' + cr);
-    if (!found || !pt) { showToast('❌ Patient not found. Register first.', 'error'); return; }
-    _show(pt);
+    showToast('✅ Loaded: ' + (pt.name || cr), 'success');
+  })
+  .catch(function(err) {
+    showToast('❌ Error: ' + err.message, 'error');
   });
 }
 
 
 
-// ─── SEND TO SHEET ────────────────────────────────────────────────────────
-// ─── MODULE 4: INTEGRATED REPORT ────────────────────────────────────────
-function loadReport() {
-  const cr = document.getElementById('rpt_cr').value.trim();
-  if (!cr) { showToast('Please enter a CR number', 'error'); return; }
-  function _show(patient) {
-    var visits = getVisits(cr);
-    if (!visits.length) visits = [patient];
-    // Use latest visit by default
-    var labid = visits[visits.length-1].labid || patient.labid || '';
-    window._lastReportCR = cr;
-    window._lastReportLabId = labid;
-    document.getElementById('rpt_patient_card').innerHTML = patientCardHTML(visits.find(function(v){return v.labid===labid;})||patient);
-    // Always show visit selector
-    var wrap = document.getElementById('rpt_content');
-    var ex = wrap.querySelector('.visit-selector'); if(ex) ex.remove();
-    wrap.insertAdjacentHTML('afterbegin', _reportVisitSelectorHTML(cr, visits, labid));
-    wrap.classList.remove('hidden');
-    showToast('✅ Loaded: ' + (patient.name || cr), 'success');
-  }
-  const patient = getLatestVisit(cr) || loadLocal('pt_' + cr);
-  if (patient) { _show(patient); return; }
-  showToast('🔄 Searching server…');
-  fetchAllFromSheet(cr, function(found) {
-    const pt = getLatestVisit(cr) || loadLocal('pt_' + cr);
-    if (!found || !pt) { showToast('❌ Patient not found. Register first.', 'error'); return; }
-    _show(pt);
-  });
-}
+
+// ─── TXT REPORT (orphaned block removed) ───────────────────────────────
 
 
 // ─── TXT REPORT GENERATOR ────────────────────────────────────────────────
-function generateTxtReport(cr, filterLabId) {
+function generateTxtReport(cr, filterLabId, _dbData) {
+  // _dbData: pre-fetched data from API { patient, visits, morph, orders, acceptance, results }
   // filterLabId: if set, only generate report for that visit; otherwise all visits
-  var visits = getVisits(cr);
-  if (!visits.length) { var ptLeg = loadLocal('pt_' + cr); if(ptLeg) visits=[ptLeg]; }
+  var visits = (_dbData && _dbData.visits) || getVisits(cr);
   if (!visits.length) return null;
+  // Normalize DB field names to frontend names
+  visits = visits.map(function(v) {
+    return {
+      cr: v.cr, labid: v.labid,
+      date: v.date_received || v.date || '',
+      name: v.name, age: v.age, sex: v.sex,
+      faculty: v.faculty, jr: v.jr, sr: v.sr,
+      sample: v.sample, tlc: v.tlc,
+      bmQuality: v.bm_quality || v.bmQuality || '',
+      blasts: v.blasts, eos: v.eos, plasma: v.plasma,
+      rightImprint: v.right_imprint || v.rightImprint || '',
+      leftImprint: v.left_imprint || v.leftImprint || '',
+      suspicion: v.suspicion
+    };
+  });
   var p = visits[0]; // Use first visit for top-level demographics
 
   const PAYMENT_FULL = {
@@ -7110,12 +7098,12 @@ function generateTxtReport(cr, filterLabId) {
     txt += '  Date: ' + (visit.date || '—') + '  |  Sample: ' + (visit.sample || '—') + '\n';
     txt += '╚' + '═'.repeat(42) + '╝\n\n';
 
-    // BM Morphology for this visit
-    // Strict visit isolation — no legacy fallback for morph
-    var morph = labid ? loadLocal(vKey('morph', cr, labid)) : null;
+    // BM Morphology for this visit — from API data
+    var morph = (_dbData && _dbData.morph && _dbData.morph[labid]) ? _dbData.morph[labid] : null;
     txt += 'BONE MARROW MORPHOLOGY\n';
-    if (morph && morph.report) {
-      txt += morph.report + '\n';
+    var morphReport = morph ? (morph.report || morph.bm_report || '') : '';
+    if (morphReport) {
+      txt += morphReport + '\n';
     } else {
       txt += '  Awaiting Result\n';
     }
@@ -7125,14 +7113,15 @@ function generateTxtReport(cr, filterLabId) {
 
     // Loop labs for this visit
     Object.entries(LAB_DEF).forEach(function([labKey, lab]) {
-      // Strict visit isolation — no legacy fallback
-      var order  = labid ? loadLocal(vKey('order_'  + labKey, cr, labid)) : null;
-      var accept = labid ? loadLocal(vKey('accept_' + labKey, cr, labid)) : null;
-      var entry  = labid ? loadLocal(vKey('entry_'  + labKey, cr, labid)) : null;
+      // From API data
+      var order  = (_dbData && _dbData.orders  && _dbData.orders[labid]  && _dbData.orders[labid][labKey])  ? _dbData.orders[labid][labKey]  : null;
+      var accept = (_dbData && _dbData.accept  && _dbData.accept[labid]  && _dbData.accept[labid][labKey])  ? _dbData.accept[labid][labKey]  : null;
+      var entry  = (_dbData && _dbData.results && _dbData.results[labid] && _dbData.results[labid][labKey]) ? _dbData.results[labid][labKey] : null;
 
-      var orderedPanels = order && order.panels
-        ? order.panels.split(' | ').map(function(s){return s.trim();})
-        : [];
+      var orderedPanels = [];
+      if (order && order.panels) {
+        orderedPanels = order.panels.split(' | ').map(function(s){return s.trim();}).filter(Boolean);
+      }
 
       var uniqueId  = accept && accept.uniqueLabId ? accept.uniqueLabId : null;
       var uid_str   = uniqueId ? '  [Unique ID: ' + uniqueId + ']' : '';
@@ -7153,8 +7142,8 @@ function generateTxtReport(cr, filterLabId) {
 
       lab.panels.forEach(function(panel) {
         if (!isPanelOrdered(panel, orderedPanels)) return;
-        var accStatus   = accept && accept.panelStatus && accept.panelStatus[panel] ? accept.panelStatus[panel] : null;
-        var panelResult = entry  && entry.panelResults && entry.panelResults[panel]  ? entry.panelResults[panel]  : null;
+        var accStatus = accept && accept.panelStatus && accept.panelStatus[panel] ? accept.panelStatus[panel] : null;
+        var panelResult = entry && entry.panelResults && entry.panelResults[panel] ? entry.panelResults[panel] : null;
         var resultStr;
         if (panelResult) resultStr = panelResult;
         else if (accStatus === 'HP') resultStr = 'On Hold (Payment)';
@@ -7177,23 +7166,92 @@ function downloadTxt() {
   const cr = window._lastReportCR;
   if (!cr) { showToast('No report loaded', 'error'); return; }
   const selectedLabId = window._lastReportLabId || '';
-  const txt = generateTxtReport(cr, selectedLabId);
-  if (!txt) { showToast('No data found for this CR', 'error'); return; }
 
-  const p = loadLocal('pt_' + cr);
-  const safeName = (p && p.name ? p.name.replace(/[^a-zA-Z0-9]/g,'_') : cr);
-  const filename = 'PRISM_' + cr + '_' + safeName + '.txt';
+  showToast('🔄 Fetching latest data from database…');
 
-  const blob = new Blob([txt], {type: 'text/plain;charset=utf-8'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('✅ Downloaded: ' + filename, 'success');
+  // Use cached data from loadReport if available, otherwise re-fetch
+  var cachedData = window._lastReportData;
+  if (cachedData && cachedData.patients && cachedData.patients.length) {
+    _processTxtDownload(cr, selectedLabId, cachedData);
+    return;
+  }
+
+  fetch(API_BASE + '/api/patients/' + encodeURIComponent(cr), {
+    headers: {'Authorization': 'Bearer ' + _apiToken}
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (!res.data || !res.data.patients || !res.data.patients.length) {
+      showToast('❌ No patient data found', 'error'); return;
+    }
+    _processTxtDownload(cr, selectedLabId, res.data);
+  })
+  .catch(function(err) {
+    showToast('❌ Failed to fetch: ' + err.message, 'error');
+  });
+}
+
+function _processTxtDownload(cr, selectedLabId, data) {
+    var visits = data.patients;
+
+    // Build morph map: labid -> morph
+    var morphMap = {};
+    (data.morphs || []).forEach(function(m) {
+      if (m.labid) morphMap[m.labid] = m;
+    });
+
+    // Build orders map: labid -> lab -> order
+    var ordersMap = {};
+    (data.orders || []).forEach(function(o) {
+      if (!o.labid) return;
+      if (!ordersMap[o.labid]) ordersMap[o.labid] = {};
+      ordersMap[o.labid][o.lab] = o;
+    });
+
+    // Build acceptance map: labid -> lab -> accept
+    var acceptMap = {};
+    (data.acceptance || []).forEach(function(a) {
+      if (!a.labid) return;
+      if (!acceptMap[a.labid]) acceptMap[a.labid] = {};
+      // parse panel_status if string
+      if (a.panel_status && typeof a.panel_status === 'string') {
+        try { a.panelStatus = JSON.parse(a.panel_status); } catch(e) { a.panelStatus = {}; }
+      } else { a.panelStatus = a.panel_status || {}; }
+      acceptMap[a.labid][a.lab] = a;
+    });
+
+    // Build results map: labid -> lab -> result
+    var resultsMap = {};
+    (data.results || []).forEach(function(r) {
+      if (!r.labid) return;
+      if (!resultsMap[r.labid]) resultsMap[r.labid] = {};
+      if (r.panel_results && typeof r.panel_results === 'string') {
+        try { r.panelResults = JSON.parse(r.panel_results); } catch(e) { r.panelResults = {}; }
+      } else { r.panelResults = r.panel_results || {}; }
+      resultsMap[r.labid][r.lab] = r;
+    });
+
+    var dbData = {
+      visits:  visits,
+      morph:   morphMap,
+      orders:  ordersMap,
+      accept:  acceptMap,
+      results: resultsMap
+    };
+
+    var txt = generateTxtReport(cr, selectedLabId, dbData);
+    if (!txt) { showToast('No data found for this CR', 'error'); return; }
+
+    var safeName = (visits[0] && visits[0].name ? visits[0].name.replace(/[^a-zA-Z0-9]/g,'_') : cr);
+    var filename = 'PRISM_' + cr + '_' + safeName + '.txt';
+    var blob = new Blob([txt], {type: 'text/plain;charset=utf-8'});
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href   = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('✅ Downloaded: ' + filename, 'success');
 }
 
 // ─── PRISM RAILWAY API ────────────────────────────────────────────────────
@@ -7328,12 +7386,7 @@ function applyRoleUI(role) {
 
 function sendToSheet(payload, successMsg) {
   showToast('🔄 Saving to database…');
-  // Also keep Google Sheets sync in parallel (safe dual-write)
-  if (SCRIPT_URL) {
-    var gsUrl = SCRIPT_URL + (SCRIPT_URL.indexOf('?') === -1 ? '?' : '&') +
-      'write=1&data=' + encodeURIComponent(JSON.stringify(payload));
-    fetch(gsUrl, {mode: 'no-cors'}).catch(function(){});
-  }
+  // Google Sheets removed — Railway DB only
   // Route to correct API endpoint based on payload fields
   var action = payload.action || '';
   var sheet = (payload.sheet || '').toLowerCase();
@@ -7572,6 +7625,17 @@ document.addEventListener('DOMContentLoaded', function() {
   if (toEl) toEl.value = today.toISOString().slice(0,10);
   if (fromEl) fromEl.value = firstOfMonth.toISOString().slice(0,10);
 });
+
+// ─── SESSION MEMORY — replaces localStorage with in-memory store ──────────
+// Data lives only for this browser tab session — never persisted
+// All authoritative data fetched fresh from Railway DB on every CR lookup
+var _sessionStore = {};
+function saveLocal(key, obj) {
+  try { _sessionStore[key] = JSON.parse(JSON.stringify(obj)); } catch(e) {}
+}
+function loadLocal(key) {
+  return _sessionStore.hasOwnProperty(key) ? _sessionStore[key] : null;
+}
 </script>
 </body>
 </html>
