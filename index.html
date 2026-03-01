@@ -4813,12 +4813,33 @@ function getVisits(cr) {
 }
 // Save a visit registration
 function saveVisit(cr, reg) {
+  // Normalize DB field names to frontend field names
+  var normalized = {
+    cr:           reg.cr           || cr,
+    labid:        reg.labid        || reg.lab_id       || '',
+    date:         reg.date_received|| reg.date         || '',
+    name:         reg.name         || '',
+    age:          reg.age          || '',
+    sex:          reg.sex          || '',
+    faculty:      reg.faculty      || '',
+    jr:           reg.jr           || '',
+    sr:           reg.sr           || '',
+    sample:       reg.sample       || '',
+    tlc:          reg.tlc          || '',
+    bmQuality:    reg.bm_quality   || reg.bmQuality    || '',
+    blasts:       reg.blasts       !== undefined ? reg.blasts : '',
+    eos:          reg.eos          !== undefined ? reg.eos    : '',
+    plasma:       reg.plasma       !== undefined ? reg.plasma : '',
+    rightImprint: reg.right_imprint|| reg.rightImprint || '',
+    leftImprint:  reg.left_imprint || reg.leftImprint  || '',
+    suspicion:    reg.suspicion    || '',
+  };
   var visits = getVisits(cr);
-  var idx = visits.findIndex(function(v) { return v.labid === reg.labid; });
-  if (idx >= 0) visits[idx] = reg; else visits.push(reg);
+  var idx = visits.findIndex(function(v) { return v.labid === normalized.labid; });
+  if (idx >= 0) visits[idx] = normalized; else visits.push(normalized);
   visits.sort(function(a,b) { return (a.date||'').localeCompare(b.date||''); });
   saveLocal('visits_' + cr, visits);
-  saveLocal('pt_' + cr, reg); // keep latest for backwards compat
+  saveLocal('pt_' + cr, normalized);
 }
 // Get latest visit for a CR
 function getLatestVisit(cr) {
@@ -4837,17 +4858,28 @@ function setSelectedLabId(context, cr, labid) {
 
 // --- PATIENT CARD HTML -----------------------------------------------------
 function patientCardHTML(p) {
+  // Normalize DB field names to frontend names
+  var name     = p.name     || '—';
+  var age      = p.age      || '?';
+  var sex      = p.sex      || '?';
+  var faculty  = p.faculty  || '—';
+  var jr       = p.jr       || '—';
+  var sr       = p.sr       || '—';
+  var sample   = p.sample   || '—';
+  var tlc      = p.tlc      || '';
+  var blasts   = p.blasts   !== undefined && p.blasts !== null && p.blasts !== '' ? p.blasts : null;
+  var suspicion= p.suspicion|| '—';
   return `
     <div class="pc-field"><label>CR Number</label><div class="val">${p.cr || '—'}</div></div>
     <div class="pc-field"><label>Lab ID</label><div class="val">${p.labid || '—'}</div></div>
-    <div class="pc-field"><label>Name</label><div class="val">${p.name || '—'}</div></div>
-    <div class="pc-field"><label>Age / Sex</label><div class="val">${p.age || '?'} yr / ${p.sex || '?'}</div></div>
-    <div class="pc-field"><label>Faculty</label><div class="val">${p.faculty || '—'}</div></div>
-    <div class="pc-field"><label>Reporting JR</label><div class="val">${p.jr || '—'}</div></div>
-    <div class="pc-field"><label>Reporting SR</label><div class="val">${p.sr || '—'}</div></div>
-    <div class="pc-field"><label>Sample / TLC</label><div class="val">${p.sample || '—'} / ${p.tlc ? p.tlc + ' ×10⁹/L' : '—'}</div></div>
-    <div class="pc-field"><label>Blasts %</label><div class="val">${p.blasts !== '' && p.blasts !== undefined ? p.blasts + '%' : '—'}</div></div>
-    <div class="pc-field"><label>Suspicion</label><div class="val" style="font-size:11px;">${p.suspicion || '—'}</div></div>
+    <div class="pc-field"><label>Name</label><div class="val">${name}</div></div>
+    <div class="pc-field"><label>Age / Sex</label><div class="val">${age} yr / ${sex}</div></div>
+    <div class="pc-field"><label>Faculty</label><div class="val">${faculty}</div></div>
+    <div class="pc-field"><label>Reporting JR</label><div class="val">${jr}</div></div>
+    <div class="pc-field"><label>Reporting SR</label><div class="val">${sr}</div></div>
+    <div class="pc-field"><label>Sample / TLC</label><div class="val">${sample} / ${tlc ? tlc + ' ×10⁹/L' : '—'}</div></div>
+    <div class="pc-field"><label>Blasts %</label><div class="val">${blasts !== null ? blasts + '%' : '—'}</div></div>
+    <div class="pc-field"><label>Suspicion</label><div class="val" style="font-size:11px;">${suspicion}</div></div>
   `;
 }
 
@@ -6257,7 +6289,15 @@ function loadForProvBM() {
     window._provBMVisits = visits;
     window._provBMMorphs = morphs;
     setSelectedLabId('morph', cr, labid);
-    document.getElementById('provbm_pc').innerHTML = patientCardHTML(pt);
+    // Normalize DB field names before display
+    var ptNorm = {
+      cr: pt.cr || cr, labid: pt.labid || '',
+      name: pt.name || '', age: pt.age || '', sex: pt.sex || '',
+      faculty: pt.faculty || '', jr: pt.jr || '', sr: pt.sr || '',
+      sample: pt.sample || '', tlc: pt.tlc || '',
+      blasts: pt.blasts, suspicion: pt.suspicion || ''
+    };
+    document.getElementById('provbm_pc').innerHTML = patientCardHTML(ptNorm);
     // Load morph report for this labid
     var morph = morphs.find(function(m){return m.labid === labid;});
     document.getElementById('provbm_report').value = (morph && morph.report) ? morph.report : '';
@@ -6285,7 +6325,23 @@ function downloadProvBM() {
   // Strictly use selected visit — no fallback to latest
   var _pvLabId = getSelectedLabId('morph', cr) || window._lastProvBMCR_labid || '';
   if (!_pvLabId) { showToast('⚠️ No visit selected', 'error'); return; }
-  var pt  = (getVisits(cr).find(function(v){return v.labid===_pvLabId;})) || {};
+  // Use API-fetched visits stored in loadForProvBM, fallback to session memory
+  var _allVisits = window._provBMVisits || getVisits(cr) || [];
+  var pt = _allVisits.find(function(v){ return v.labid === _pvLabId; }) || {};
+  // Normalize DB field names
+  pt = {
+    name:         pt.name         || '',
+    cr:           pt.cr           || cr,
+    labid:        pt.labid        || _pvLabId,
+    age:          pt.age          || '',
+    sex:          pt.sex          || '',
+    faculty:      pt.faculty      || '',
+    jr:           pt.jr           || '',
+    sr:           pt.sr           || '',
+    sample:       pt.sample       || '',
+    date:         pt.date_received || pt.date || '',
+    suspicion:    pt.suspicion    || '',
+  };
   var now = new Date();
   var dateStr = now.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
   var timeStr = now.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true});
