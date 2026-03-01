@@ -7450,7 +7450,7 @@ function sendToSheet(payload, successMsg) {
   if (action === 'morphology' || sheet === 'morphology') endpoint = '/api/morph';
   else if (action === 'order') endpoint = '/api/orders/' + lab;
   else if (action === 'save_acceptance') endpoint = '/api/acceptance/' + lab;
-  else if (action === 'save_result' || action === 'result') endpoint = '/api/results/' + lab;
+  else if (action === 'save_result' || action === 'save_results' || action === 'result' || action === 'upsert_result') endpoint = '/api/results/' + lab;
 
   if (!_apiToken) {
     showToast('⚠️ Not logged in — saved locally only', 'error');
