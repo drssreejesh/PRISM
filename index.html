@@ -5125,16 +5125,7 @@ const ROLE_ACCESS = {
   admin:       { screens: ['screen-register', 'screen-morph', 'screen-order', 'screen-results', 'screen-entry', 'screen-provbm', 'screen-report'], lab: null },
 };
 
-const ROLE_PASSWORDS = {
-  fish:       'FISH@2026',
-  fcm:        'FCM@2026',
-  rtpcr:      'RTPCR@2026',
-  ngsh12:     'NGSH12@2026',
-  ngsh9:      'NGSH9@2026',
-  tcr:        'TCR@2026',
-  consultant: 'Hemat@2026',
-  admin:      'Sree@Feb2026',
-};
+// Passwords validated server-side via Railway API only
 
 const ROLE_MODULE_MAP = {
   'screen-register': 'Module 01',
@@ -5168,14 +5159,28 @@ function verifyRolePwd(role) {
   const input = document.getElementById('pwd-input-' + role);
   const err   = document.getElementById('pwd-err-' + role);
   if (!input) return;
-  if (input.value === ROLE_PASSWORDS[role]) {
-    input.value = '';
-    selectRole(role);
-  } else {
-    err.textContent = '❌ Incorrect password';
-    input.value = '';
-    input.focus();
-  }
+  var pwd = input.value;
+  input.value = '';
+  err.textContent = 'Checking...';
+  fetch(API_BASE + '/api/auth/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({role: role, password: pwd})
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (res.token) {
+      _apiToken = res.token;
+      _currentRole = role;
+      selectRole(role);
+    } else {
+      err.textContent = '❌ Incorrect password';
+      input.focus();
+    }
+  })
+  .catch(function() {
+    err.textContent = '⚠️ Server unreachable';
+  });
 }
 
 function selectRole(role) {
@@ -5816,14 +5821,27 @@ function closeConfigPrompt() {
 function verifyConfig() {
   const input = document.getElementById('config-pwd-input');
   const err   = document.getElementById('config-pwd-error');
-  if (input.value === 'Sree@Feb2026') {
-    closeConfigPrompt();
-    openConfig();
-  } else {
-    err.textContent = '❌ Incorrect password';
-    input.value = '';
-    input.focus();
-  }
+  var pwd = input.value;
+  input.value = '';
+  err.textContent = 'Checking...';
+  fetch(API_BASE + '/api/auth/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({role: 'admin', password: pwd})
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (res.token) {
+      closeConfigPrompt();
+      openConfig();
+    } else {
+      err.textContent = '❌ Incorrect password';
+      input.focus();
+    }
+  })
+  .catch(function() {
+    err.textContent = '⚠️ Server unreachable';
+  });
 }
 
 
