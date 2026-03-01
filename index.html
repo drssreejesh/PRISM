@@ -6004,12 +6004,67 @@ function fetchAllFromSheet(cr, callback) {
     .then(function(res) {
       if (res.status === 'ok' && res.data) {
         var d = res.data;
-        if (d.patient) saveVisit(cr, d.patient);
-        if (d.patients) d.patients.forEach(function(p) { saveVisit(cr, p); });
-        showToast('\u2705 Data loaded from database');
+
+        // Save patient visits to session memory
+        if (d.patient)   saveVisit(cr, d.patient);
+        if (d.patients)  d.patients.forEach(function(p) { saveVisit(cr, p); });
+
+        // Save orders to session memory — keyed by visit+lab
+        (d.orders || []).forEach(function(o) {
+          var labKey = o.lab || o.lab_name || '';
+          var labid  = o.labid || o.lab_id || '';
+          if (!labid || !labKey) return;
+          var orderObj = {
+            panels:  o.panels  || '',
+            payment: o.payment || '',
+            notes:   o.notes   || '',
+            labid:   labid
+          };
+          saveLocal(vKey('order_' + labKey, cr, labid), orderObj);
+          saveLocal('order_' + labKey + '_' + cr, orderObj); // legacy key fallback
+        });
+
+        // Save acceptance to session memory
+        (d.acceptance || []).forEach(function(a) {
+          var labKey = a.lab || a.lab_name || '';
+          var labid  = a.labid || a.lab_id || '';
+          if (!labid || !labKey) return;
+          var ps = a.panel_status;
+          if (ps && typeof ps === 'string') { try { ps = JSON.parse(ps); } catch(e) { ps = {}; } }
+          var acceptObj = {
+            uniqueLabId: a.unique_lab_id || a.uniqueLabId || '',
+            notes:       a.notes || '',
+            panelStatus: ps || {},
+            labid:       labid
+          };
+          saveLocal(vKey('accept_' + labKey, cr, labid), acceptObj);
+        });
+
+        // Save results to session memory
+        (d.results || []).forEach(function(r) {
+          var labKey = r.lab || r.lab_name || '';
+          var labid  = r.labid || r.lab_id || '';
+          if (!labid || !labKey) return;
+          var pr = r.panel_results;
+          if (pr && typeof pr === 'string') { try { pr = JSON.parse(pr); } catch(e) { pr = {}; } }
+          var resultObj = {
+            panelResults: pr || {},
+            labid:        labid
+          };
+          saveLocal(vKey('entry_' + labKey, cr, labid), resultObj);
+        });
+
+        // Save morphology to session memory
+        (d.morphs || []).forEach(function(m) {
+          var labid = m.labid || m.lab_id || '';
+          if (!labid) return;
+          saveLocal(vKey('morph', cr, labid), { report: m.report || m.bm_report || '', labid: labid });
+        });
+
+        showToast('Data loaded from database', 'success');
         callback(true);
       } else {
-        showToast('\u26a0\ufe0f CR not found', 'error');
+        showToast('CR not found', 'error');
         callback(false);
       }
     })
