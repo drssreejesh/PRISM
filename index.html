@@ -7358,13 +7358,13 @@ function loadPending(lab) {
   el.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--slate);padding:8px;">🔄 Loading pending cases...</div>';
   if (!_apiToken) { el.innerHTML = '<div style="color:var(--crimson);font-size:11px;padding:8px;">⚠️ Not logged in</div>'; return; }
 
-  // Fetch orders and acceptances in parallel
+  // Fetch orders and accepted pairs in parallel
   Promise.all([
     fetch(API_BASE + '/api/orders/' + lab, { headers: {'Authorization': 'Bearer ' + _apiToken} }).then(function(r){return r.json();}),
-    fetch(API_BASE + '/api/acceptance/' + lab, { headers: {'Authorization': 'Bearer ' + _apiToken} }).then(function(r){return r.json();})
+    fetch(API_BASE + '/api/orders/' + lab + '/accepted', { headers: {'Authorization': 'Bearer ' + _apiToken} }).then(function(r){return r.json();})
   ]).then(function(results) {
-    var orders = (results[0].data || results[0].orders || results[0] || []);
-    var accepted = (results[1].data || results[1].acceptances || results[1] || []);
+    var orders = (results[0].data || []);
+    var accepted = (results[1].data || []);
     if (!Array.isArray(orders)) orders = [];
     if (!Array.isArray(accepted)) accepted = [];
 
@@ -7479,9 +7479,16 @@ function downloadAdminExcel() {
     allData.forEach(function(item) {
       var rows = item.data;
       if (!Array.isArray(rows)) rows = [];
-      var headers = ['CR Number','Lab ID','Name','Date','Panels','Results','Notes'];
+      var headers = [
+        'CR Number','Lab ID','Name','Age','Sex','Date Received','Sample',
+        'Faculty','JR','SR','TLC','BM Quality','Blasts%','Eos%','Plasma%',
+        'Right Imprint','Left Imprint','Suspicion',
+        'Panels Ordered','Unique Lab ID','Acceptance Notes',
+        'Panel Status','Results','Locked'
+      ];
       var sheetData = [headers];
       rows.forEach(function(r) {
+        // Format panel results
         var results = '';
         if (r.panel_results) {
           try {
@@ -7489,14 +7496,26 @@ function downloadAdminExcel() {
             results = Object.entries(pr).map(function(e) { return e[0] + ': ' + e[1]; }).join(' | ');
           } catch(e) { results = String(r.panel_results); }
         }
+        // Format panel status
+        var panelStatus = '';
+        if (r.panel_status) {
+          try {
+            var ps = typeof r.panel_status === 'string' ? JSON.parse(r.panel_status) : r.panel_status;
+            panelStatus = Object.entries(ps).map(function(e) { return e[0] + ': ' + e[1]; }).join(' | ');
+          } catch(e) { panelStatus = String(r.panel_status); }
+        }
         sheetData.push([
-          r.cr||'', r.labid||'', r.name||'', r.date||r.created_at||'',
-          r.panels||'', results, r.notes||''
+          r.cr||'', r.labid||'', r.name||'', r.age||'', r.sex||'',
+          r.date||'', r.sample||'', r.faculty||'', r.jr||'', r.sr||'',
+          r.tlc||'', r.bm_quality||'', r.blasts||'', r.eos||'', r.plasma||'',
+          r.right_imprint||'', r.left_imprint||'', r.suspicion||'',
+          r.panels||'', r.unique_lab_id||'', r.acceptance_notes||'',
+          panelStatus, results, r.locked ? 'Yes' : 'No'
         ]);
         if (rows.length > 0) hasData = true;
       });
       var ws = XLSX.utils.aoa_to_sheet(sheetData);
-      ws['!cols'] = headers.map(function() { return {wch: 18}; });
+      ws['!cols'] = headers.map(function(h) { return {wch: Math.max(h.length, 14)}; });
       XLSX.utils.book_append_sheet(wb, ws, item.lab.toUpperCase());
     });
 
