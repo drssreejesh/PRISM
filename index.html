@@ -37,7 +37,7 @@
     color: var(--dark);
   }
 
-  /* ─── HEADER ─── */
+  /* --- HEADER --- */
   header {
     background: linear-gradient(135deg, var(--dark) 0%, var(--mid) 100%);
     border-bottom: 2px solid var(--crimson);
@@ -74,14 +74,14 @@
     margin-top: 2px;
   }
 
-  /* ─── MAIN WRAPPER ─── */
+  /* --- MAIN WRAPPER --- */
   .main {
     max-width: 960px;
     margin: 0 auto;
     padding: 40px 20px 60px;
   }
 
-  /* ─── HOME SCREEN ─── */
+  /* --- HOME SCREEN --- */
   .home-screen {
     text-align: center;
     padding: 60px 20px;
@@ -164,7 +164,7 @@
   }
   .home-card:hover .card-btn { background: var(--crimson); }
 
-  /* ─── PANEL / FORM WRAPPER ─── */
+  /* --- PANEL / FORM WRAPPER --- */
   .panel {
     display: none;
     background: white;
@@ -214,7 +214,7 @@
 
   .panel-body { padding: 36px 32px; }
 
-  /* ─── FORM ELEMENTS ─── */
+  /* --- FORM ELEMENTS --- */
   .form-section {
     margin-bottom: 32px;
     padding-bottom: 28px;
@@ -281,7 +281,7 @@
     background: white;
   }
 
-  /* ─── RADIO BUTTONS (Sex) ─── */
+  /* --- RADIO BUTTONS (Sex) --- */
   .radio-group {
     display: flex;
     gap: 10px;
@@ -308,7 +308,7 @@
     font-weight: 600;
   }
 
-  /* ─── MULTI-SELECT TAGS (Clinical Suspicion) ─── */
+  /* --- MULTI-SELECT TAGS (Clinical Suspicion) --- */
   .tag-cloud {
     display: flex;
     flex-wrap: wrap;
@@ -337,7 +337,7 @@
     width: 300px;
   }
 
-  /* ─── ANCILLARY PANELS ─── */
+  /* --- ANCILLARY PANELS --- */
   .anc-section {
     border: 1.5px solid var(--border);
     border-radius: 10px;
@@ -395,7 +395,7 @@
     color: white;
   }
 
-  /* ─── PATIENT PREVIEW CARD ─── */
+  /* --- PATIENT PREVIEW CARD --- */
   .patient-card {
     background: linear-gradient(135deg, var(--dark), var(--mid));
     border-radius: 10px;
@@ -417,7 +417,7 @@
     font-family: var(--mono);
   }
 
-  /* ─── RESULT ENTRY ─── */
+  /* --- RESULT ENTRY --- */
   .result-block {
     background: var(--light);
     border-radius: 10px;
@@ -451,7 +451,7 @@
     font-size: 13px;
   }
 
-  /* ─── CR LOOKUP ─── */
+  /* --- CR LOOKUP --- */
   .cr-lookup {
     display: flex;
     gap: 12px;
@@ -475,7 +475,7 @@
   }
   .lookup-btn:hover { background: var(--crimson-light); }
 
-  /* ─── SUBMIT BTN ─── */
+  /* --- SUBMIT BTN --- */
   .submit-wrap { text-align: right; margin-top: 28px; }
   .submit-btn {
     padding: 13px 36px;
@@ -494,7 +494,7 @@
   .submit-btn:hover { background: var(--crimson-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,26,26,0.3); }
   .submit-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
 
-  /* ─── TOAST ─── */
+  /* --- TOAST --- */
   .toast {
     position: fixed;
     bottom: 30px; right: 30px;
@@ -516,7 +516,7 @@
   .toast.error { border-left-color: var(--crimson); }
   .toast.success { border-left-color: #2d7a4f; }
 
-  /* ─── SETUP NOTICE ─── */
+  /* --- SETUP NOTICE --- */
   
   
 
@@ -603,7 +603,7 @@
 
 
 
-  /* ─── LAB ID COMPOSITE FIELD ─── */
+  /* --- LAB ID COMPOSITE FIELD --- */
   .labid-grid {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
@@ -659,7 +659,7 @@
   input.cr-error { border-color: var(--crimson) !important; }
   input.cr-ok    { border-color: #1a6a3a !important; }
 
-  /* ─── ORDER BLOCKS ─── */
+  /* --- ORDER BLOCKS --- */
   .order-block {
     background: var(--light);
     border: 1.5px solid var(--border);
@@ -744,7 +744,7 @@
   }
   .order-summary strong { color: white; display: block; margin-bottom: 4px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
 
-  /* ─── PANEL RESULT BLOCKS ─── */
+  /* --- PANEL RESULT BLOCKS --- */
   .panel-result-block {
     border: 1.5px solid var(--border);
     border-radius: 8px;
@@ -767,7 +767,7 @@
   }
 
 
-  /* ─── ROLE SELECTION SCREEN ─── */
+  /* --- ROLE SELECTION SCREEN --- */
   #screen-role {
     position: fixed;
     inset: 0;
@@ -866,7 +866,7 @@
   }
 
 
-  /* ─── WORKFLOW BLOCK MESSAGE ─── */
+  /* --- WORKFLOW BLOCK MESSAGE --- */
   .workflow-block {
     display: none;
     background: #fde8e8;
@@ -881,7 +881,7 @@
   }
   .workflow-block.visible { display: block; }
   .workflow-block .wf-icon { font-size: 20px; margin-right: 8px; vertical-align: middle; }
-  /* ─── RESULT OPTION TAGS ─── */
+  /* --- RESULT OPTION TAGS --- */
   .result-opt {
     font-size: 12px;
     font-weight: 600;
@@ -912,7 +912,7 @@
     border-color: #b8860b;
     color: white;
   }
-  /* ─── OK / PP / HP STATUS TAGS ─── */
+  /* --- OK / PP / HP STATUS TAGS --- */
   .ok-tag { color: #1a6a3a; border-color: #1a6a3a; font-weight: 700; font-size: 15px; min-height: 48px; }
   .pp-tag { color: #8a6000; border-color: #b8860b; font-weight: 700; font-size: 15px; min-height: 48px; }
   .hp-tag { color: var(--crimson); border-color: var(--crimson); font-weight: 700; font-size: 15px; min-height: 48px; }
@@ -935,7 +935,7 @@
   .status-badge-inline.pp  { background: #fff3cd; color: #8a6000; }
   .status-badge-inline.hp  { background: #fde8e8; color: var(--crimson); }
 
-  /* ─── ACCEPTANCE TAGS ─── */
+  /* --- ACCEPTANCE TAGS --- */
   .accept-yes {
     border-color: #1a6a3a;
     color: #1a6a3a;
@@ -961,7 +961,7 @@
     color: white;
   }
 
-  /* ─── SUB-TABS (mobile first) ─── */
+  /* --- SUB-TABS (mobile first) --- */
   .sub-tabs {
     display: flex;
     overflow-x: auto;
@@ -996,7 +996,7 @@
   .sub-panel { display: none; }
   .sub-panel.active { display: block; }
 
-  /* ─── MOBILE TAG GRID ─── */
+  /* --- MOBILE TAG GRID --- */
   .mobile-tag-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -1036,7 +1036,7 @@
     background: var(--success);
   }
 
-  /* ─── MOBILE NOTES / SAVE ─── */
+  /* --- MOBILE NOTES / SAVE --- */
   .mob-notes {
     width: 100%;
     padding: 12px 14px;
@@ -1069,7 +1069,7 @@
   }
   .mob-save-btn:hover, .mob-save-btn:active { background: var(--crimson-light); }
 
-  /* ─── ORDERED SUMMARY BADGE ─── */
+  /* --- ORDERED SUMMARY BADGE --- */
   .ordered-summary {
     background: var(--gold-light);
     border: 1px solid var(--gold);
@@ -1083,7 +1083,7 @@
   }
   .ordered-summary.empty { display: none; }
 
-  /* ─── MOBILE PANEL BODY ─── */
+  /* --- MOBILE PANEL BODY --- */
   @media (max-width: 640px) {
     .panel-body { padding: 20px 14px; }
     .sub-tabs { margin: -20px -14px 20px; }
@@ -1101,7 +1101,7 @@
     .home-card { padding: 22px 18px; }
   }
 
-  /* ─── INTEGRATED REPORT ─── */
+  /* --- INTEGRATED REPORT --- */
   .rpt-header {
     display: flex;
     align-items: center;
@@ -1307,7 +1307,7 @@
 
 <div class="main">
 
-  <!-- ══════════ ROLE SELECTION ══════════ -->
+  <!-- ========== ROLE SELECTION ========== -->
   <div id="screen-role" style="position:fixed;inset:0;background:#111;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:99999;padding:32px 24px;">
     <div style="font-family:var(--mono);font-size:40px;font-weight:900;letter-spacing:0.18em;margin-bottom:4px;"><span style="color:var(--crimson);font-weight:700;">P</span><span style="color:var(--crimson);font-weight:700;">R</span><span style="color:var(--crimson);font-weight:700;">I</span><span style="color:var(--crimson);font-weight:700;">S</span><span style="color:var(--crimson);font-weight:700;">M</span></div>
     <div style="font-size:12px;color:#ccc;font-weight:600;letter-spacing:0.03em;margin-bottom:4px;text-align:center;line-height:1.9;">
@@ -1510,7 +1510,7 @@
   <!-- Role badge -->
   <div id="role-badge" title="Current role" style="display:none;position:fixed;bottom:70px;right:16px;background:var(--dark);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--slate);letter-spacing:0.08em;cursor:pointer;z-index:100;"></div>
 
-  <!-- ══════════ HOME ══════════ -->
+  <!-- ========== HOME ========== -->
   <div id="screen-home" class="home-screen">
     <h2 class="home-title"><span style="color:var(--crimson);font-weight:700;">P</span><span style="color:var(--crimson);font-weight:700;">R</span><span style="color:var(--crimson);font-weight:700;">I</span><span style="color:var(--crimson);font-weight:700;">S</span><span style="color:var(--crimson);font-weight:700;">M</span></h2>
     <p class="home-subtitle" style="font-size:13px;letter-spacing:0.08em;margin-bottom:6px;">PGIMER HemePath Registry for Integrated Sample Management</p>
@@ -1569,7 +1569,7 @@
     </div>
   </div>
 
-  <!-- ══════════ MODULE 1: REGISTER ══════════ -->
+  <!-- ========== MODULE 1: REGISTER ========== -->
   <div id="screen-register" class="panel">
     <div class="panel-header">
       <button class="back-btn" onclick="showScreen('screen-home')">← Back</button>
@@ -1780,7 +1780,7 @@
     </div>
   </div>
 
-  <!-- ══════════ MODULE 2: BM MORPHOLOGY ══════════ -->
+  <!-- ========== MODULE 2: BM MORPHOLOGY ========== -->
   <div id="screen-morph" class="panel">
     <div class="panel-header">
       <button class="back-btn" onclick="showScreen('screen-home')">← Back</button>
@@ -1817,7 +1817,7 @@
     </div>
   </div>
 
-    <!-- ══════════ MODULE 03: ORDER TESTS ══════════ -->
+    <!-- ========== MODULE 03: ORDER TESTS ========== -->
   <div id="screen-order" class="panel">
     <div class="panel-header">
       <button class="back-btn" onclick="showScreen('screen-home')">← Back</button>
@@ -1834,7 +1834,7 @@
         <button class="sub-tab" onclick="switchSubTab('order','tcr',this)">TCR</button>
       </div>
 
-      <!-- ── FISH ── -->
+      <!-- -- FISH -- -->
       <div class="sub-panel active" id="order-fish">
         <div class="workflow-block" id="order_fish_wfblock"></div>
         <div class="cr-lookup">
@@ -1891,7 +1891,7 @@
         </div>
       </div>
 
-      <!-- ── FCM ── -->
+      <!-- -- FCM -- -->
       <div class="sub-panel" id="order-fcm">
         <div class="workflow-block" id="order_fcm_wfblock"></div>
         <div class="cr-lookup">
@@ -1947,7 +1947,7 @@
         </div>
       </div>
 
-      <!-- ── RT-PCR ── -->
+      <!-- -- RT-PCR -- -->
       <div class="sub-panel" id="order-rtpcr">
         <div class="workflow-block" id="order_rtpcr_wfblock"></div>
         <div class="cr-lookup">
@@ -2000,7 +2000,7 @@
         </div>
       </div>
 
-      <!-- ── NGS-H12 ── -->
+      <!-- -- NGS-H12 -- -->
       <div class="sub-panel" id="order-ngsh12">
         <div class="workflow-block" id="order_ngsh12_wfblock"></div>
         <div class="cr-lookup">
@@ -2046,7 +2046,7 @@
         </div>
       </div>
 
-      <!-- ── NGS-H9 ── -->
+      <!-- -- NGS-H9 -- -->
       <div class="sub-panel" id="order-ngsh9">
         <div class="workflow-block" id="order_ngsh9_wfblock"></div>
         <div class="cr-lookup">
@@ -2094,7 +2094,7 @@
         </div>
       </div>
 
-      <!-- ── TCR Clonality ── -->
+      <!-- -- TCR Clonality -- -->
       <div class="sub-panel" id="order-tcr">
         <div class="workflow-block" id="order_tcr_wfblock"></div>
         <div class="cr-lookup">
@@ -2142,7 +2142,7 @@
     </div>
   </div>
 
-  <!-- ══════════ MODULE 3: TEST ACCEPTANCE ══════════ -->
+  <!-- ========== MODULE 3: TEST ACCEPTANCE ========== -->
   <div id="screen-results" class="panel">
     <div class="panel-header">
       <button class="back-btn" onclick="showScreen('screen-home')">← Back</button>
@@ -2790,7 +2790,7 @@
     </div>
   </div>
 
-    <!-- ══════════ MODULE 4: RESULT ENTRY ══════════ -->
+    <!-- ========== MODULE 4: RESULT ENTRY ========== -->
   <div id="screen-entry" class="panel">
     <div class="panel-header">
       <button class="back-btn" onclick="showScreen('screen-home')">← Back</button>
@@ -3815,7 +3815,7 @@
     </div>
   </div>
 
-    <!-- ══════════ MODULE 05: INTEGRATED REPORT ══════════ -->
+    <!-- ========== MODULE 05: INTEGRATED REPORT ========== -->
   <div id="screen-report" class="panel">
     <div class="panel-header">
       <button class="back-btn" onclick="showScreen('screen-home')">← Back</button>
@@ -3870,7 +3870,7 @@
     </div>
   </div>
 
-  <!-- ══════════ MODULE 07: PROVISIONAL BM REPORT ══════════ -->
+  <!-- ========== MODULE 07: PROVISIONAL BM REPORT ========== -->
   <div id="screen-provbm" class="panel">
     <div class="panel-header">
       <button class="back-btn" onclick="showScreen('screen-home')">← Back</button>
@@ -3920,7 +3920,7 @@
 
 </div><!-- /main -->
 
-<!-- ─── CONFIG BUTTON ─── -->
+<!-- --- CONFIG BUTTON --- -->
 <button class="config-btn" onclick="promptConfig()">⚙ Config</button>
 
 <!-- Config password prompt -->
@@ -3939,7 +3939,7 @@
   </div>
 </div>
 
-<!-- ─── CONFIG MODAL ─── -->
+<!-- --- CONFIG MODAL --- -->
 <div class="config-modal" id="configModal">
   <div class="config-box">
     <button class="close-modal" onclick="closeConfig()">×</button>
@@ -3965,11 +3965,11 @@
   </div>
 </div>
 
-<!-- ─── TOAST ─── -->
+<!-- --- TOAST --- -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── TOAST NOTIFICATIONS ─────────────────────────────────────────────────
+// --- TOAST NOTIFICATIONS -------------------------------------------------
 function showToast(msg, type) {
   var toast = document.getElementById('toast');
   if (!toast) return;
@@ -3983,13 +3983,13 @@ function showToast(msg, type) {
 }
 
 
-// ─── CONFIG ────────────────────────────────────────────────────────────────
-const APPS_SCRIPT_CODE = `// ═══════════════════════════════════════════════════════════
+// --- CONFIG ----------------------------------------------------------------
+const APPS_SCRIPT_CODE = `// ===========================================================
 // PRISM — PGIMER HemePath Registry
 // ONE sheet per lab: orders + acceptance + results in same row
 // Columns: Timestamp | CR | Lab ID | Unique Lab ID | Name | Payment | Notes | Panels | [Status|Result]...
 // Deploy → Web App | Execute as: Me | Access: Anyone
-// ═══════════════════════════════════════════════════════════
+// ===========================================================
 
 function doGet(e) {
   try {
@@ -4588,7 +4588,7 @@ function saveConfig() {
 
 
 
-// ── Ready for next patient banner ────────────────────────────────────────
+// -- Ready for next patient banner ----------------------------------------
 function showReadyBanner(screenId, msg) {
   resetModule(screenId);
   var panel = document.getElementById(screenId);
@@ -4608,53 +4608,53 @@ function showReadyBanner(screenId, msg) {
   }, 3000);
 }
 
-// ─── RESET MODULE AFTER SAVE ─────────────────────────────────────────────
+// --- RESET MODULE AFTER SAVE ---------------------------------------------
 function resetModule(screenId) {
   var panel = document.getElementById(screenId);
   if (!panel) return;
 
-  // ── Text, number, textarea inputs ──────────────────────────────────────
+  // -- Text, number, textarea inputs --------------------------------------
   panel.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(function(el) {
     el.value = '';
   });
 
-  // ── Select dropdowns → reset to first option ───────────────────────────
+  // -- Select dropdowns → reset to first option ---------------------------
   panel.querySelectorAll('select').forEach(function(el) {
     el.selectedIndex = 0;
   });
 
-  // ── Radio buttons ───────────────────────────────────────────────────────
+  // -- Radio buttons -------------------------------------------------------
   panel.querySelectorAll('input[type="radio"]').forEach(function(el) {
     el.checked = false;
   });
 
-  // ── Date inputs → reset to today ───────────────────────────────────────
+  // -- Date inputs → reset to today ---------------------------------------
   panel.querySelectorAll('input[type="date"]').forEach(function(el) {
     el.valueAsDate = new Date();
   });
 
-  // ── Tags / buttons / result options ────────────────────────────────────
+  // -- Tags / buttons / result options ------------------------------------
   panel.querySelectorAll('.mtag, .panel-tag, .result-opt, .tag, .ok-tag, .pp-tag, .hp-tag').forEach(function(el) {
     el.classList.remove('selected','selected-positive','selected-negative','selected-inconclusive');
   });
 
-  // ── Status classes on blocks ────────────────────────────────────────────
+  // -- Status classes on blocks --------------------------------------------
   panel.querySelectorAll('.prb').forEach(function(el) {
     el.classList.remove('ok-status','pp-status','hp-status','inactive');
   });
 
-  // ── Hide card/wrap areas ────────────────────────────────────────────────
+  // -- Hide card/wrap areas ------------------------------------------------
   panel.querySelectorAll('[id$="_wrap"],[id$="_card_wrap"]').forEach(function(el) {
     el.classList.add('hidden');
   });
 
-  // ── Remove visit selectors ──────────────────────────────────────────────
+  // -- Remove visit selectors ----------------------------------------------
   panel.querySelectorAll('.visit-selector').forEach(function(el) { el.remove(); });
 
-  // ── Hide other-input wraps ──────────────────────────────────────────────
+  // -- Hide other-input wraps ----------------------------------------------
   panel.querySelectorAll('.other-input-wrap').forEach(function(el) { el.classList.add('hidden'); });
 
-  // ── Hide/clear summaries, pay bars, hints ──────────────────────────────
+  // -- Hide/clear summaries, pay bars, hints ------------------------------
   panel.querySelectorAll('[id$="_summary"],[id$="_pay_status"]').forEach(function(el) {
     el.classList.add('hidden'); el.textContent = '';
   });
@@ -4666,16 +4666,16 @@ function resetModule(screenId) {
     el.classList.remove('visible'); el.innerHTML = '';
   });
 
-  // ── Previews and hints (spans and divs) ───────────────────────────────
+  // -- Previews and hints (spans and divs) -------------------------------
   panel.querySelectorAll('span[id], div[id*="preview"], div[id*="hint"], div[id*="status"]').forEach(function(el) {
     el.textContent = ''; el.innerHTML = '';
   });
 
-  // ── Other suspicion input ───────────────────────────────────────────────
+  // -- Other suspicion input -----------------------------------------------
   var otherInp = panel.querySelector('#otherSuspicionInput');
   if (otherInp) { otherInp.value = ''; otherInp.style.display = 'none'; }
 
-  // ── Registration-specific resets — explicit field by field ────────────
+  // -- Registration-specific resets — explicit field by field ------------
   if (screenId === 'screen-register') {
 
     // Identifiers
@@ -4723,11 +4723,11 @@ function resetModule(screenId) {
     setTimeout(updateLabIdPreview, 50);
   }
 
-  // ── In-memory selected lab IDs ─────────────────────────────────────────
+  // -- In-memory selected lab IDs -----------------------------------------
   Object.keys(_selectedLabId).forEach(function(k) { delete _selectedLabId[k]; });
 }
 
-// ─── NAVIGATION ────────────────────────────────────────────────────────────
+// --- NAVIGATION ------------------------------------------------------------
 function showScreen(id) {
   // Block access to restricted screens based on role
   if (currentRole && id !== 'screen-home') {
@@ -4755,7 +4755,7 @@ function showScreen(id) {
   }, 30);
 }
 
-// ─── TAG TOGGLE ────────────────────────────────────────────────────────────
+// --- TAG TOGGLE ------------------------------------------------------------
 function toggleTag(el) {
   el.classList.toggle('selected');
 }
@@ -4778,7 +4778,7 @@ function getTagGroupValues(containerId) {
     .map(t => t.dataset.val).join(', ');
 }
 
-// ─── PANEL TOGGLE ──────────────────────────────────────────────────────────
+// --- PANEL TOGGLE ----------------------------------------------------------
 function togglePanel(el) { el.classList.toggle('selected'); }
 function toggleMTag(el) { el.classList.toggle('selected'); }
 
@@ -4794,7 +4794,7 @@ function toggleAnc(btn, id) {
   if (body.classList.contains('open')) btn.classList.add('enabled');
 }
 
-// ─── PATIENT DATA STORE (in-memory + localStorage) ─────────────────────────
+// --- PATIENT DATA STORE (in-memory + localStorage) -------------------------
 function saveLocal(key, obj) {
   try { localStorage.setItem('hemepath_' + key, JSON.stringify(obj)); } catch(e) {}
 }
@@ -4802,7 +4802,7 @@ function loadLocal(key) {
   try { return JSON.parse(localStorage.getItem('hemepath_' + key)); } catch(e) { return null; }
 }
 
-// ─── VISIT KEY HELPERS ────────────────────────────────────────────────────
+// --- VISIT KEY HELPERS ----------------------------------------------------
 // Visit-scoped key: e.g. order_fish_202600012345__A_1_2026
 function vKey(type, cr, labid) {
   return type + '_' + cr + '__' + labid;
@@ -4835,7 +4835,7 @@ function setSelectedLabId(context, cr, labid) {
 }
 
 
-// ─── PATIENT CARD HTML ─────────────────────────────────────────────────────
+// --- PATIENT CARD HTML -----------------------------------------------------
 function patientCardHTML(p) {
   return `
     <div class="pc-field"><label>CR Number</label><div class="val">${p.cr || '—'}</div></div>
@@ -4851,7 +4851,7 @@ function patientCardHTML(p) {
   `;
 }
 
-// ─── MODULE 1: REGISTER ───────────────────────────────────────────────────
+// --- MODULE 1: REGISTER ---------------------------------------------------
 function registerPatient() {
   const cr = document.getElementById('reg_cr').value.trim();
   // Build composite Lab ID (done inside validation below)
@@ -4866,7 +4866,7 @@ function registerPatient() {
   const suspicion = getSelectedTags();
   const bmQuality = getTagGroupValues('bmQualityTags');
 
-  // ── Hard validation — every field mandatory ─────────────────────────────
+  // -- Hard validation — every field mandatory -----------------------------
   const labidNum  = document.getElementById('reg_labid_num').value.trim();
   const labidYear = document.getElementById('reg_labid_year').value.trim();
   const labidType = document.getElementById('reg_labid_type').value;
@@ -5004,7 +5004,7 @@ function confirmNewVisit() {
   window.scrollTo(0,0); document.documentElement.scrollTop=0; document.body.scrollTop=0;
 }
 
-// ─── ORDER INTERACTIONS (shared across all labs) ─────────────────────────
+// --- ORDER INTERACTIONS (shared across all labs) -------------------------
 function togglePayment(lab, type, el) {
   const container = document.getElementById(lab + '-payment');
   container.querySelectorAll('.mtag').forEach(t => t.classList.remove('selected'));
@@ -5076,7 +5076,7 @@ document.addEventListener('input', function(e) {
   }
 });
 
-// ─── SUB-TAB SWITCHING ───────────────────────────────────────────────────
+// --- SUB-TAB SWITCHING ---------------------------------------------------
 function switchSubTab(module, name, btn) {
   // Scope entirely to the nearest panel-body ancestor of the clicked button
   // This prevents cross-module interference
@@ -5112,7 +5112,7 @@ function isPanelOrdered(p, orderedPanels) {
 
 // Consultant/admin auth now handled by verifyRolePwd()
 
-// ─── ROLE-BASED ACCESS ───────────────────────────────────────────────────
+// --- ROLE-BASED ACCESS ---------------------------------------------------
 const ROLE_ACCESS = {
   resident:    { screens: ['screen-register', 'screen-morph', 'screen-order'], lab: null },
   fish:        { screens: ['screen-results', 'screen-entry'], lab: 'fish' },
@@ -5302,7 +5302,7 @@ function showScreen(id) {
   }, 30);
 }
 
-// ─── TAG TOGGLE ────────────────────────────────────────────────────────────
+// --- TAG TOGGLE ------------------------------------------------------------
 function toggleTag(el) {
   el.classList.toggle('selected');
 }
@@ -5325,7 +5325,7 @@ function getTagGroupValues(containerId) {
     .map(t => t.dataset.val).join(', ');
 }
 
-// ─── PANEL TOGGLE ──────────────────────────────────────────────────────────
+// --- PANEL TOGGLE ----------------------------------------------------------
 function togglePanel(el) { el.classList.toggle('selected'); }
 function toggleMTag(el) { el.classList.toggle('selected'); }
 
@@ -5341,7 +5341,7 @@ function toggleAnc(btn, id) {
   if (body.classList.contains('open')) btn.classList.add('enabled');
 }
 
-// ─── PATIENT DATA STORE (in-memory + localStorage) ─────────────────────────
+// --- PATIENT DATA STORE (in-memory + localStorage) -------------------------
 function saveLocal(key, obj) {
   try { localStorage.setItem('hemepath_' + key, JSON.stringify(obj)); } catch(e) {}
 }
@@ -5349,7 +5349,7 @@ function loadLocal(key) {
   try { return JSON.parse(localStorage.getItem('hemepath_' + key)); } catch(e) { return null; }
 }
 
-// ─── VISIT KEY HELPERS ────────────────────────────────────────────────────
+// --- VISIT KEY HELPERS ----------------------------------------------------
 // Visit-scoped key: e.g. order_fish_202600012345__A_1_2026
 function vKey(type, cr, labid) {
   return type + '_' + cr + '__' + labid;
@@ -5382,7 +5382,7 @@ function setSelectedLabId(context, cr, labid) {
 }
 
 
-// ─── PATIENT CARD HTML ─────────────────────────────────────────────────────
+// --- PATIENT CARD HTML -----------------------------------------------------
 function patientCardHTML(p) {
   return `
     <div class="pc-field"><label>CR Number</label><div class="val">${p.cr || '—'}</div></div>
@@ -5398,7 +5398,7 @@ function patientCardHTML(p) {
   `;
 }
 
-// ─── MODULE 1: REGISTER ───────────────────────────────────────────────────
+// --- MODULE 1: REGISTER ---------------------------------------------------
 function registerPatient() {
   const cr = document.getElementById('reg_cr').value.trim();
   // Build composite Lab ID (done inside validation below)
@@ -5413,7 +5413,7 @@ function registerPatient() {
   const suspicion = getSelectedTags();
   const bmQuality = getTagGroupValues('bmQualityTags');
 
-  // ── Hard validation — every field mandatory ─────────────────────────────
+  // -- Hard validation — every field mandatory -----------------------------
   const labidNum  = document.getElementById('reg_labid_num').value.trim();
   const labidYear = document.getElementById('reg_labid_year').value.trim();
   const labidType = document.getElementById('reg_labid_type').value;
@@ -5546,7 +5546,7 @@ function confirmNewVisit() {
   window._pendingVisitPayload = null;
 }
 
-// ─── ORDER INTERACTIONS (shared across all labs) ─────────────────────────
+// --- ORDER INTERACTIONS (shared across all labs) -------------------------
 function togglePayment(lab, type, el) {
   const container = document.getElementById(lab + '-payment');
   container.querySelectorAll('.mtag').forEach(t => t.classList.remove('selected'));
@@ -5618,7 +5618,7 @@ document.addEventListener('input', function(e) {
   }
 });
 
-// ─── SUB-TAB SWITCHING ───────────────────────────────────────────────────
+// --- SUB-TAB SWITCHING ---------------------------------------------------
 function switchSubTab(module, name, btn) {
   // Scope entirely to the nearest panel-body ancestor of the clicked button
   // This prevents cross-module interference
@@ -5654,9 +5654,9 @@ function isPanelOrdered(p, orderedPanels) {
 
 // Consultant/admin auth now handled by verifyRolePwd()
 
-// ─── ROLE-BASED ACCESS ───────────────────────────────────────────────────
+// --- ROLE-BASED ACCESS ---------------------------------------------------
 
-// ─── LAB ID + CR HELPERS ────────────────────────────────────────────────
+// --- LAB ID + CR HELPERS ------------------------------------------------
 function updateLabIdPreview() {
   const type = document.getElementById('reg_labid_type')?.value || 'A';
   const num  = document.getElementById('reg_labid_num')?.value.trim() || '';
@@ -5704,7 +5704,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// ─── UNIQUE LAB ID CHECK ─────────────────────────────────────────────────
+// --- UNIQUE LAB ID CHECK -------------------------------------------------
 function checkUniqueLabId(lab, input) {
   const val = input.value.trim();
   const statusEl = document.getElementById('a' + lab + '_uid_status');
@@ -5733,7 +5733,7 @@ function checkUniqueLabId(lab, input) {
 }
 
 
-// ─── RESULT ENTRY OPTION SELECTION ───────────────────────────────────────
+// --- RESULT ENTRY OPTION SELECTION ---------------------------------------
 function selectResult(prefix, pid, el) {
   const val = el.dataset.val;
   const resultEl = document.getElementById(prefix + '_' + pid + '_result');
@@ -5800,7 +5800,7 @@ function _updateResultValue(prefix, pid) {
 
 
 
-// ─── CONFIG PASSWORD GATE ─────────────────────────────────────────────────
+// --- CONFIG PASSWORD GATE -------------------------------------------------
 function promptConfig() {
   const overlay = document.getElementById('config-pwd-overlay');
   overlay.style.display = 'flex';
@@ -5839,8 +5839,8 @@ function verifyConfig() {
 
 
 
-// ─── VISIT SELECTOR ───────────────────────────────────────────────────────
-// ── Report visit selector — switches which LabID report is downloaded ─────
+// --- VISIT SELECTOR -------------------------------------------------------
+// -- Report visit selector — switches which LabID report is downloaded -----
 function _reportVisitSelectorHTML(cr, visits, currentLabId) {
   var html = '<div class="visit-selector" style="margin-bottom:12px;padding:10px;background:#f8f8f8;border-radius:10px;border:1px solid var(--border);">';
   html += '<div style="font-size:10px;color:var(--slate);font-family:var(--mono);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Select Visit to Download</div>';
@@ -5988,7 +5988,7 @@ function selectVisitBtn(context, cr, labid, btn) {
   }
 }
 
-// ─── FETCH FROM SHEET ─────────────────────────────────────────────────────
+// --- FETCH FROM SHEET -----------------------------------------------------
 // Fetches all data for a CR from Google Sheets and caches locally
 function fetchAllFromSheet(cr, callback) {
   showToast('🔄 Fetching from database…');
@@ -6132,7 +6132,7 @@ function checkPatientExistsAsync(cr, callback) {
   fetchAllFromSheet(cr, callback);
 }
 
-// ─── WORKFLOW GATE HELPERS ────────────────────────────────────────────────
+// --- WORKFLOW GATE HELPERS ------------------------------------------------
 function showWorkflowBlock(id, msg) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -6180,7 +6180,7 @@ function testConnection() {
     });
 }
 
-// ─── MODULE 07: PROVISIONAL BM REPORT ────────────────────────────────────
+// --- MODULE 07: PROVISIONAL BM REPORT ------------------------------------
 function loadForProvBM() {
   var cr = document.getElementById('provbm_cr').value.trim();
   if (!cr) { showToast('Please enter a CR number', 'error'); return; }
@@ -6381,7 +6381,7 @@ function saveMorph() {
   setTimeout(function() { showReadyBanner('screen-morph', '✅ Saved — Ready for next case'); }, 1500);
 }
 
-// ─── MODULE 3: TEST ACCEPTANCE ───────────────────────────────────────────
+// --- MODULE 3: TEST ACCEPTANCE -------------------------------------------
 function toggleStatus(prefix, pid, status, el) {
   const block = document.getElementById(prefix + '_' + pid + '_block');
   ['OK','PP','HP'].forEach(s => {
@@ -6438,7 +6438,7 @@ function _doLoadAcceptance(lab, cr) {
 function renderAcceptanceCard(lab, data, cr) {
   const prefix = 'a' + lab;
   document.getElementById(prefix + '_pc').innerHTML = patientCardHTML(data);
-  // ── Clear all acceptance status buttons first ───────────────────────────
+  // -- Clear all acceptance status buttons first ---------------------------
   document.querySelectorAll('#' + prefix + '_wrap .ok-tag, #' + prefix + '_wrap .pp-tag, #' + prefix + '_wrap .hp-tag').forEach(function(btn) {
     btn.classList.remove('selected');
   });
@@ -6451,7 +6451,7 @@ function renderAcceptanceCard(lab, data, cr) {
   if (uidEl) uidEl.value = '';
   var uidStatus = document.getElementById(prefix + '_uid_status');
   if (uidStatus) { uidStatus.textContent = ''; }
-  // ── Load order for this visit ────────────────────────────────────────────
+  // -- Load order for this visit --------------------------------------------
   const _aLabId = getSelectedLabId('accept_' + lab, cr) || (data && data.labid) || '';
   var order = _aLabId ? loadLocal(vKey('order_' + lab, cr, _aLabId)) : null;
   // Fallback to legacy key if vKey not found
@@ -6563,7 +6563,7 @@ function saveAcceptance(lab) {
   setTimeout(function() { showReadyBanner('screen-results', '✅ Saved — Ready for next case'); }, 1500);
 }
 
-// ─── MODULE 4: RESULT ENTRY ───────────────────────────────────────────────
+// --- MODULE 4: RESULT ENTRY -----------------------------------------------
 function loadForEntry(lab) {
   var cr = document.getElementById('e' + lab + '_cr').value.trim();
   if (!cr) { showToast('Please enter a CR number', 'error'); return; }
@@ -6617,7 +6617,7 @@ function _doLoadEntry(lab, cr) {
 function renderEntryCard(lab, data, cr) {
   const prefix = 'e' + lab;
   document.getElementById(prefix + '_pc').innerHTML = patientCardHTML(data);
-  // ── Clear all result selections first ───────────────────────────────────
+  // -- Clear all result selections first -----------------------------------
   document.querySelectorAll('#' + prefix + '_wrap .result-opt').forEach(function(o) {
     o.classList.remove('selected','selected-positive','selected-negative','selected-inconclusive');
   });
@@ -6632,7 +6632,7 @@ function renderEntryCard(lab, data, cr) {
   });
   var overallEl = document.getElementById(prefix + '_overall_notes');
   if (overallEl) overallEl.value = '';
-  // ── Load order and accept for this visit only (no legacy fallback) ───────
+  // -- Load order and accept for this visit only (no legacy fallback) -------
   const _eLabId2 = getSelectedLabId('entry_' + lab, cr) || (data && data.labid) || '';
   const order  = _eLabId2 ? loadLocal(vKey('order_'  + lab, cr, _eLabId2)) : null;
   const accept = _eLabId2 ? loadLocal(vKey('accept_' + lab, cr, _eLabId2)) : null;
@@ -6724,7 +6724,7 @@ function saveEntry(lab) {
   setTimeout(function() { showReadyBanner('screen-entry', '✅ Saved — Ready for next case'); }, 1500);
 }
 
-// ─── MODULE 2: ORDER TESTS ────────────────────────────────────────────────
+// --- MODULE 2: ORDER TESTS ------------------------------------------------
 const LAB_KEYS = ['fish','fcm','rtpcr','ngsh12','ngsh9'];
 
 function loadForOrder(lab) {
@@ -6757,7 +6757,7 @@ function _showOrderVisit(lab, cr) {
 function renderOrderCard(lab, data, cr) {
   document.getElementById(lab + '_pc').innerHTML = patientCardHTML(data);
   document.getElementById(lab + '_card_wrap').classList.remove('hidden');
-  // ── Clear ALL selections first ──────────────────────────────────────────
+  // -- Clear ALL selections first ------------------------------------------
   document.querySelectorAll('#' + lab + '-panels .mtag').forEach(function(t) { t.classList.remove('selected'); });
   document.querySelectorAll('#' + lab + '-payment .mtag').forEach(function(t) { t.classList.remove('selected'); });
   var notesEl = document.getElementById(lab + '_notes');
@@ -6766,7 +6766,7 @@ function renderOrderCard(lab, data, cr) {
   if (otherWrap) otherWrap.classList.add('hidden');
   var summaryEl = document.getElementById(lab + '_summary');
   if (summaryEl) summaryEl.classList.add('hidden');
-  // ── Restore saved data for this visit only (no legacy fallback) ─────────
+  // -- Restore saved data for this visit only (no legacy fallback) ---------
   const labid = getSelectedLabId('order_' + lab, cr) || (data && data.labid) || '';
   const saved = labid ? loadLocal(vKey('order_' + lab, cr, labid)) : null;
   if (saved && saved.panels) { restoreMTags(lab + '-panels', saved.panels); }
@@ -6839,7 +6839,7 @@ function saveOrder(lab) {
   setTimeout(function() { showReadyBanner('screen-order', '✅ Saved — Ready for next case'); }, 1500);
 }
 
-// ─── MODULE 3: RESULTS ───────────────────────────────────────────────────
+// --- MODULE 3: RESULTS ---------------------------------------------------
 function loadForResult(lab) {
   const cr = document.getElementById('r' + lab + '_cr').value.trim();
   if (!cr) { showToast('Please enter a CR number', 'error'); return; }
@@ -6986,12 +6986,12 @@ function saveResult(lab) {
 }
 
 
-// ─── PATIENT LOOKUP (unified) ─────────────────────────────────────────────
+// --- PATIENT LOOKUP (unified) ---------------------------------------------
 function lookupPatient(module) {
   // legacy — not used in new modules but kept for safety
 }
 
-// ─── MODULE 4: INTEGRATED REPORT ────────────────────────────────────────
+// --- MODULE 4: INTEGRATED REPORT ----------------------------------------
 function loadReport() {
   const cr = document.getElementById('rpt_cr').value.trim();
   if (!cr) { showToast('Please enter a CR number', 'error'); return; }
@@ -7025,10 +7025,10 @@ function loadReport() {
 
 
 
-// ─── TXT REPORT (orphaned block removed) ───────────────────────────────
+// --- TXT REPORT (orphaned block removed) -------------------------------
 
 
-// ─── TXT REPORT GENERATOR ────────────────────────────────────────────────
+// --- TXT REPORT GENERATOR ------------------------------------------------
 function generateTxtReport(cr, filterLabId, _dbData) {
   // _dbData: pre-fetched data from API { patient, visits, morph, orders, acceptance, results }
   // filterLabId: if set, only generate report for that visit; otherwise all visits
@@ -7070,8 +7070,8 @@ function generateTxtReport(cr, filterLabId, _dbData) {
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
   const timeStr = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-  const LINE  = '─'.repeat(44);
-  const DLINE = '═'.repeat(44);
+  const LINE  = '-'.repeat(44);
+  const DLINE = '='.repeat(44);
 
   var txt = '';
   txt += 'PRISM — PGIMER HemePath Registry\n';
@@ -7085,7 +7085,7 @@ function generateTxtReport(cr, filterLabId, _dbData) {
   txt += 'Faculty : ' + (p.faculty || '—') + '\n';
   txt += DLINE + '\n\n';
 
-  // ── Loop each visit ───────────────────────────────────────────────────
+  // -- Loop each visit ---------------------------------------------------
   // Filter to specific visit if requested
   if (filterLabId) {
     visits = visits.filter(function(v) { return v.labid === filterLabId; });
@@ -7093,10 +7093,10 @@ function generateTxtReport(cr, filterLabId, _dbData) {
 
   visits.forEach(function(visit, vi) {
     var labid = visit.labid || '—';
-    txt += '╔' + '═'.repeat(42) + '╗\n';
+    txt += '+-' + '-'.repeat(42) + '-+\n';
     txt += '  VISIT ' + (vi+1) + ' — Lab ID: ' + labid + '\n';
     txt += '  Date: ' + (visit.date || '—') + '  |  Sample: ' + (visit.sample || '—') + '\n';
-    txt += '╚' + '═'.repeat(42) + '╝\n\n';
+    txt += '+' + '='.repeat(42) + '+\n\n';
 
     // BM Morphology for this visit — from API data
     var morph = (_dbData && _dbData.morph && _dbData.morph[labid]) ? _dbData.morph[labid] : null;
@@ -7254,7 +7254,7 @@ function _processTxtDownload(cr, selectedLabId, data) {
     showToast('✅ Downloaded: ' + filename, 'success');
 }
 
-// ─── PRISM RAILWAY API ────────────────────────────────────────────────────
+// --- PRISM RAILWAY API ----------------------------------------------------
 var API_BASE = 'https://prism-server-production.up.railway.app';
 var _apiToken = null;
 var _prismUnlocked = false;
@@ -7326,7 +7326,7 @@ function apiLogin(callback) {
   callback(false);
 }
 
-// ─── ROLE-BASED UI ───────────────────────────────────────────────────────
+// --- ROLE-BASED UI -------------------------------------------------------
 var ROLE_SCREENS = {
   resident:   ['screen-register','screen-morph','screen-report','screen-provbm'],
   fish:       ['screen-order','screen-results','screen-entry','screen-report'],
@@ -7419,7 +7419,7 @@ function sendToSheet(payload, successMsg) {
   });
 }
 
-// ─── PENDING LIST & EXCEL EXPORT ─────────────────────────────────────────
+// --- PENDING LIST & EXCEL EXPORT -----------------------------------------
 
 var _pendingCache = {}; // cache pending data per lab
 
@@ -7522,7 +7522,7 @@ function downloadPendingExcel(lab) {
   showToast('✅ Excel downloaded', 'success');
 }
 
-// ─── ADMIN EXCEL EXPORT ───────────────────────────────────────────────────
+// --- ADMIN EXCEL EXPORT ---------------------------------------------------
 function downloadAdminExcel() {
   if (_currentRole !== 'admin') { showToast('⚠️ Admin access required', 'error'); return; }
   if (typeof XLSX === 'undefined') { showToast('⚠️ Excel library not loaded', 'error'); return; }
@@ -7626,7 +7626,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (fromEl) fromEl.value = firstOfMonth.toISOString().slice(0,10);
 });
 
-// ─── SESSION MEMORY — replaces localStorage with in-memory store ──────────
+// --- SESSION MEMORY — replaces localStorage with in-memory store ----------
 // Data lives only for this browser tab session — never persisted
 // All authoritative data fetched fresh from Railway DB on every CR lookup
 var _sessionStore = {};
